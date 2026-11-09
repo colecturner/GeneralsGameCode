@@ -3848,7 +3848,7 @@ void GameLogic::update()
 	}
 #endif
 
-	if (now==1 || now==2 || now==391 || now==392 || now==855 || now==856 || now==1527 || now==1528 || now==2057 || now==2058 || now==2066 || now==2067 || now==2068 || now==2093 || now==2094 || now==2533 || now==2534 || now==3165 || now==3166) { for (Int hi = 0; hi < (Int)m_sleepyUpdates.size(); ++hi) { UpdateModulePtr hu = m_sleepyUpdates[hi]; DEBUG_LOG(("heap %d i %d obj %d key %d %s next %d phase %d pri %08X", (Int)now, hi, (Int)hu->friend_getObject()->getID(), (Int)hu->getModuleNameKey(), TheNameKeyGenerator->keyToName(hu->getModuleNameKey()).str(), (Int)hu->friend_getNextCallFrame(), (Int)hu->friend_getNextCallPhase(), (UnsignedInt)hu->friend_getPriority())); } }
+	if (now==1 || now==2 || now==391 || now==392 || now==855 || now==856 || now==1527 || now==1528 || now==2057 || now==2058 || now==2066 || now==2067 || now==2068 || now==2093 || now==2094 || now==2533 || now==2534 || now==3165 || now==3166 || now==900 || now==1000 || now==1100 || now==1200 || now==1300 || now==1400 || now==1500) { for (Int hi = 0; hi < (Int)m_sleepyUpdates.size(); ++hi) { UpdateModulePtr hu = m_sleepyUpdates[hi]; DEBUG_LOG(("heap %d i %d obj %d key %d %s next %d phase %d pri %08X", (Int)now, hi, (Int)hu->friend_getObject()->getID(), (Int)hu->getModuleNameKey(), TheNameKeyGenerator->keyToName(hu->getModuleNameKey()).str(), (Int)hu->friend_getNextCallFrame(), (Int)hu->friend_getNextCallPhase(), (UnsignedInt)hu->friend_getPriority())); } }
 	{
 		while (!m_sleepyUpdates.empty())
 		{
@@ -3866,7 +3866,7 @@ void GameLogic::update()
 			{
 				break;
 			}
-			if (now==1 || now==2 || now==391 || now==392 || now==855 || now==856 || now==1527 || now==1528 || now==2057 || now==2058 || now==2066 || now==2067 || now==2068 || now==2093 || now==2094 || now==2533 || now==2534 || now==3165 || now==3166) DEBUG_LOG(("heaprun %d obj %d key %d %s pri %08X", (Int)now, (Int)u->friend_getObject()->getID(), (Int)u->getModuleNameKey(), TheNameKeyGenerator->keyToName(u->getModuleNameKey()).str(), (UnsignedInt)u->friend_getPriority()));
+			if (now==1 || now==2 || now==391 || now==392 || now==855 || now==856 || now==1527 || now==1528 || now==2057 || now==2058 || now==2066 || now==2067 || now==2068 || now==2093 || now==2094 || now==2533 || now==2534 || now==3165 || now==3166 || now==900 || now==1000 || now==1100 || now==1200 || now==1300 || now==1400 || now==1500) DEBUG_LOG(("heaprun %d obj %d key %d %s pri %08X", (Int)now, (Int)u->friend_getObject()->getID(), (Int)u->getModuleNameKey(), TheNameKeyGenerator->keyToName(u->getModuleNameKey()).str(), (UnsignedInt)u->friend_getPriority()));
 
 			UpdateSleepTime sleepLen = UPDATE_SLEEP_NONE;	// default, if it is disabled.
 
