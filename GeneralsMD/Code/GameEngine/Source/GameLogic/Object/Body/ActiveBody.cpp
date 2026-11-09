@@ -903,6 +903,7 @@ void ActiveBody::setInitialHealth(Int initialPercent)
 void ActiveBody::setMaxHealth( Real maxHealth, MaxHealthChangeType healthChangeType )
 {
 	Real prevMaxHealth = m_maxHealth;
+	DEBUG_LOG(("setMaxHealth %d obj %d prev %08X cur %08X new %08X type %d", (Int)TheGameLogic->getFrame(), (Int)getObject()->getID(), *(UnsignedInt*)&prevMaxHealth, *(UnsignedInt*)&m_currentHealth, *(UnsignedInt*)&maxHealth, (Int)healthChangeType));
 	m_maxHealth = maxHealth;
 	m_initialHealth = maxHealth;
 
@@ -1512,6 +1513,7 @@ void ActiveBody::onVeterancyLevelChanged( VeterancyLevel oldLevel, VeterancyLeve
 	Real oldBonus = TheGlobalData->m_healthBonus[oldLevel];
 	Real newBonus = TheGlobalData->m_healthBonus[newLevel];
 	Real mult = newBonus / oldBonus;
+	DEBUG_LOG(("veterancy %d obj %d %d->%d old %08X new %08X mult %08X max %08X", (Int)TheGameLogic->getFrame(), (Int)getObject()->getID(), (Int)oldLevel, (Int)newLevel, *(UnsignedInt*)&oldBonus, *(UnsignedInt*)&newBonus, *(UnsignedInt*)&mult, *(UnsignedInt*)&m_maxHealth));
 
 	// get this before calling setMaxHealth, since it can clip curHealth
 	//Real newHealth = m_currentHealth * mult;

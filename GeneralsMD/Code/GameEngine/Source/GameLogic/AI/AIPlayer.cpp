@@ -1530,10 +1530,12 @@ Bool AIPlayer::isAGoodIdeaToBuildTeam( TeamPrototype *proto )
 {
 	// Check condition.
 	if (!proto->evaluateProductionCondition()) {
+		DEBUG_LOG(("goodIdea %d %s condition false", (Int)TheGameLogic->getFrame(), proto->getName().str()));
 		return false;
 	}
 	// check build limit
 	if (proto->countTeamInstances() >= proto->getTemplateInfo()->m_maxInstances){
+		DEBUG_LOG(("goodIdea %d %s max instances %d", (Int)TheGameLogic->getFrame(), proto->getName().str(), proto->countTeamInstances()));
 		if (TheGlobalData->m_debugAI) {
 			AsciiString str;
 			str.format("Team %s not chosen - %d already exist.", proto->getName().str(), proto->countTeamInstances());
@@ -1546,11 +1548,13 @@ Bool AIPlayer::isAGoodIdeaToBuildTeam( TeamPrototype *proto )
 	{
 		TeamInQueue *team = iter.cur();
 		if (team->m_team->getPrototype() == proto) {
+			DEBUG_LOG(("goodIdea %d %s already queued", (Int)TheGameLogic->getFrame(), proto->getName().str()));
 			return false; // currently building one of these.
 		}
 	}
 	Bool needMoney;
 	if (!isPossibleToBuildTeam( proto, true, needMoney)) {
+		DEBUG_LOG(("goodIdea %d %s not possible needMoney %d", (Int)TheGameLogic->getFrame(), proto->getName().str(), (Int)needMoney));
 		if (TheGlobalData->m_debugAI) {
 			AsciiString str;
 			if (needMoney) {
@@ -1562,6 +1566,7 @@ Bool AIPlayer::isAGoodIdeaToBuildTeam( TeamPrototype *proto )
 		}
 		return false;
 	}
+	DEBUG_LOG(("goodIdea %d %s yes priority %d", (Int)TheGameLogic->getFrame(), proto->getName().str(), proto->getTemplateInfo()->m_productionPriority));
 	return true;
 }
 
@@ -1734,6 +1739,7 @@ Bool AIPlayer::selectTeamToBuild()
 
 	// pick a random team from the hi-priority set
 	Int which = GameLogicRandomValue( 0, count-1 );
+	DEBUG_LOG(("selectTeam %d count %d which %d hiPri %d", (Int)TheGameLogic->getFrame(), count, which, hiPri));
 
 	TeamPrototype *teamProto = nullptr;
 	Int i = 0;
