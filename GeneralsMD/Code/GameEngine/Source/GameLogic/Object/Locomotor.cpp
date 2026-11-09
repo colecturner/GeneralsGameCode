@@ -993,8 +993,10 @@ void Locomotor::locoUpdate_moveTowardsAngle(Object* obj, Real goalAngle)
 		// can't stay in one place; move in the desired direction at min speed.
 		Coord3D desiredPos = *obj->getPosition();
 		Real goalAngleIn = goalAngle;
-		if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [goalAngleIn] __asm fcos __asm fstp tbyte ptr [t80]  DEBUG_LOG(("x80 %d obj %d locoangle cos in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&goalAngleIn, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
-		if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [goalAngleIn] __asm fsin __asm fstp tbyte ptr [t80]  DEBUG_LOG(("x80 %d obj %d locoangle sin in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&goalAngleIn, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
+		if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [goalAngleIn] __asm fcos __asm fstp tbyte ptr [t80]
+			DEBUG_LOG(("x80 %d obj %d locoangle cos in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&goalAngleIn, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
+		if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [goalAngleIn] __asm fsin __asm fstp tbyte ptr [t80]
+			DEBUG_LOG(("x80 %d obj %d locoangle sin in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&goalAngleIn, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
 		desiredPos.x += Cos(goalAngle) * minSpeed * 2;
 		desiredPos.y += Sin(goalAngle) * minSpeed * 2;
 		// pass a huge num for "dist to goal", so that we don't think we're nearing
@@ -1011,8 +1013,10 @@ void Locomotor::locoUpdate_moveTowardsAngle(Object* obj, Real goalAngle)
 		DEBUG_ASSERTCRASH(m_template->m_appearance != LOCO_THRUST, ("THRUST should always have minspeeds!"));
 		Coord3D desiredPos = *obj->getPosition();
 		Real goalAngleIn = goalAngle;
-		if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [goalAngleIn] __asm fcos __asm fstp tbyte ptr [t80]  DEBUG_LOG(("x80 %d obj %d locoangle2 cos in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&goalAngleIn, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
-		if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [goalAngleIn] __asm fsin __asm fstp tbyte ptr [t80]  DEBUG_LOG(("x80 %d obj %d locoangle2 sin in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&goalAngleIn, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
+		if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [goalAngleIn] __asm fcos __asm fstp tbyte ptr [t80]
+			DEBUG_LOG(("x80 %d obj %d locoangle2 cos in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&goalAngleIn, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
+		if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [goalAngleIn] __asm fsin __asm fstp tbyte ptr [t80]
+			DEBUG_LOG(("x80 %d obj %d locoangle2 sin in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&goalAngleIn, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
 		desiredPos.x += Cos(goalAngle) * 1000.0f;
 		desiredPos.y += Sin(goalAngle) * 1000.0f;
 #ifdef DEBUG_CRC
@@ -1754,7 +1758,8 @@ void Locomotor::moveTowardsPositionLegs(Object* obj, PhysicsBehavior *physics, c
 	Real dy = goalPos.y - obj->getPosition()->y;
 	Real dx = goalPos.x - obj->getPosition()->x;
 	Real desiredAngle = WWMath::Atan2(dy, dx);
-	if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [dy] __asm fld dword ptr [dx] __asm fpatan __asm fstp tbyte ptr [t80]  DEBUG_LOG(("x80 %d obj %d legs atan2 y %08X x %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&dy, *(UnsignedInt*)&dx, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
+	if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [dy] __asm fld dword ptr [dx] __asm fpatan __asm fstp tbyte ptr [t80]
+			DEBUG_LOG(("x80 %d obj %d legs atan2 y %08X x %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&dy, *(UnsignedInt*)&dx, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
 
 	if (m_template->m_wanderWidthFactor != 0.0f) {
 		Real angleLimit = PI/8 * m_template->m_wanderWidthFactor;
