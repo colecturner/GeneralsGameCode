@@ -343,6 +343,7 @@ void StateMachine::internalClear()
  */
 void StateMachine::clear()
 {
+	if (TheGameLogic->getFrame()>=1560 && TheGameLogic->getFrame()<=1585 && m_owner && (m_owner->getID()==340 || m_owner->getID()==346)) DEBUG_LOG(("smclear %d obj %d machine %x old %d", (Int)TheGameLogic->getFrame(), (Int)m_owner->getID(), this, (Int)(m_currentState ? m_currentState->getID() : -1)));
 	// if the machine is locked, it cannot be cleared
 	if (m_locked)
 	{
@@ -562,6 +563,7 @@ StateReturnType StateMachine::setState( StateID newStateID )
 StateReturnType StateMachine::internalSetState( StateID newStateID )
 {
 	State *newState = nullptr;
+	if (TheGameLogic->getFrame()>=1560 && TheGameLogic->getFrame()<=1585 && m_owner && (m_owner->getID()==340 || m_owner->getID()==346)) DEBUG_LOG(("smset %d obj %d machine %x old %d new %d", (Int)TheGameLogic->getFrame(), (Int)m_owner->getID(), this, (Int)(m_currentState ? m_currentState->getID() : -1), (Int)newStateID));
 
 	// anytime the state changes, stop sleeping
 	m_sleepTill = 0;

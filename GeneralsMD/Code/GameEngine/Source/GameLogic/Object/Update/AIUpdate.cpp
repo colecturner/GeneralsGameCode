@@ -2649,6 +2649,7 @@ Bool AIUpdateInterface::isAllowedToRespondToAiCommands(const AICommandParms* par
 //-------------------------------------------------------------------------------------------------
 void AIUpdateInterface::aiDoCommand(const AICommandParms* parms)
 {
+	if (TheGameLogic->getFrame()>=1560 && TheGameLogic->getFrame()<=1585 && getObject() && (getObject()->getID()==340 || getObject()->getID()==346)) DEBUG_LOG(("aicmd %d obj %d cmd %d src %d allowed %d state %d", (Int)TheGameLogic->getFrame(), (Int)getObject()->getID(), (Int)parms->m_cmd, (Int)parms->m_cmdSource, (Int)isAllowedToRespondToAiCommands(parms), (Int)getStateMachine()->getCurrentStateID()));
 	// TheSuperHackers @info The AiCommandParms for m_obj, m_otherObj and m_team should be null tested before use.
 	// These variables could relate to a deleted object when a pending command is reconstituted.
 
