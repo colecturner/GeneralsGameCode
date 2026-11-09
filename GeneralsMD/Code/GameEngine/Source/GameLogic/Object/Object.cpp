@@ -4009,6 +4009,14 @@ void Object::crc( Xfer *xfer )
 		tmp.format("getTransformMatrix(): %8.8X, ", tmpXfer.getCRC());
 		tmpXfer.close();
 		logString.concat(tmp);
+		{
+			// Iron Dunes tracing: the transform's raw bits.
+			const Matrix3D& m = *getTransformMatrix();
+			#define IDB(f) (*(const UnsignedInt*)&(f))
+			CRCDEBUG_LOG(("transform of %d: %08X %08X %08X %08X | %08X %08X %08X %08X | %08X %08X %08X %08X", getID(),
+				IDB(m[0][0]), IDB(m[0][1]), IDB(m[0][2]), IDB(m[0][3]), IDB(m[1][0]), IDB(m[1][1]), IDB(m[1][2]), IDB(m[1][3]), IDB(m[2][0]), IDB(m[2][1]), IDB(m[2][2]), IDB(m[2][3])));
+			#undef IDB
+		}
 	}
 #endif // DEBUG_CRC
 
