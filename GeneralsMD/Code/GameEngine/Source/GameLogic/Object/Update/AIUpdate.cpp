@@ -4641,7 +4641,7 @@ Object* AIUpdateInterface::getNextMoodTarget( Bool calledByAI, Bool calledDuring
 
 	DEBUG_ASSERTCRASH(m_nextMoodCheckTime != 0, ("m_nextMoodCheckTime should never be zero here."));
 
-	if (TheGameLogic->getFrame()>=1580 && TheGameLogic->getFrame()<=1590) DEBUG_LOG(("mood %d obj %d %s byAI %d idle %d now %d next %d offset %d", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), obj->getTemplate()->getName().str(), (Int)calledByAI, (Int)calledDuringIdle, (Int)now, (Int)m_nextMoodCheckTime, (Int)m_randomlyOffsetMoodCheck));
+	if ((TheGameLogic->getFrame()>=1580 && TheGameLogic->getFrame()<=1590) || ((obj->getID()==340 || obj->getID()==346) && TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1590)) DEBUG_LOG(("mood %d obj %d %s byAI %d idle %d now %d next %d offset %d", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), obj->getTemplate()->getName().str(), (Int)calledByAI, (Int)calledDuringIdle, (Int)now, (Int)m_nextMoodCheckTime, (Int)m_randomlyOffsetMoodCheck));
 	if (calledByAI)
 	{
 		// make sure it's time to check again.
