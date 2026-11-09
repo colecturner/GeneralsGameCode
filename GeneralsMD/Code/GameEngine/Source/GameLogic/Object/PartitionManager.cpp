@@ -74,6 +74,7 @@
 #include "GameLogic/Module/StealthUpdate.h"
 #include "GameLogic/PartitionManager.h"
 #include "Common/XferCRC.h"
+#include "Common/CRCDebug.h"
 #include "GameLogic/PolygonTrigger.h"
 #include "GameLogic/Squad.h"
 #include "GameLogic/GhostObject.h"
