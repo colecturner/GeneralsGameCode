@@ -1304,7 +1304,7 @@ Real AIUpdateInterface::calculateMaxBlockedSpeed(Object *other) const
 static Bool colLogWin(const Object *o)
 {
 	UnsignedInt f = TheGameLogic->getFrame(); ObjectID id = o->getID();
-	return ((id==433 || id==423) && f>=925 && f<=935) || ((id==887 || id==889) && f>=1340 && f<=1360) || ((id==292 || id==281) && f>=840 && f<=850);
+	return ((id==433 || id==423) && f>=925 && f<=935) || ((id==887 || id==889) && f>=1340 && f<=1360) || ((id==292 || id==281) && f>=840 && f<=850) || ((id==126 || id==125 || id==119) && f>=950 && f<=1000);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4641,6 +4641,7 @@ Object* AIUpdateInterface::getNextMoodTarget( Bool calledByAI, Bool calledDuring
 
 	DEBUG_ASSERTCRASH(m_nextMoodCheckTime != 0, ("m_nextMoodCheckTime should never be zero here."));
 
+	if (TheGameLogic->getFrame()>=1580 && TheGameLogic->getFrame()<=1590) DEBUG_LOG(("mood %d obj %d %s byAI %d idle %d now %d next %d offset %d", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), obj->getTemplate()->getName().str(), (Int)calledByAI, (Int)calledDuringIdle, (Int)now, (Int)m_nextMoodCheckTime, (Int)m_randomlyOffsetMoodCheck));
 	if (calledByAI)
 	{
 		// make sure it's time to check again.
