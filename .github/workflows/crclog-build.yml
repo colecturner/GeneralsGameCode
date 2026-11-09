@@ -2,6 +2,8 @@ name: CRC log build
 
 on:
   workflow_dispatch:
+  push:
+    branches: [crclog-static]
 
 jobs:
   build-generalsmd-releaselog:
