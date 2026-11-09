@@ -964,6 +964,7 @@ Real Locomotor::getMaxLift(BodyDamageType condition) const
 //-------------------------------------------------------------------------------------------------
 void Locomotor::locoUpdate_moveTowardsAngle(Object* obj, Real goalAngle)
 {
+	if (obj && ((TheGameLogic->getFrame()>=490 && TheGameLogic->getFrame()<=500) || (TheGameLogic->getFrame()>=1090 && TheGameLogic->getFrame()<=1100) || (TheGameLogic->getFrame()>=695 && TheGameLogic->getFrame()<=705))) DEBUG_LOG(("locoangle %d obj %d goal %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&goalAngle));
 	setFlag(MAINTAIN_POS_IS_VALID, false);
 
 	if (obj == nullptr || m_template == nullptr)
@@ -1059,6 +1060,7 @@ void Locomotor::locoUpdate_moveTowardsPosition(Object* obj, const Coord3D& goalP
 																							 Real onPathDistToGoal, Real desiredSpeed, Bool *blocked)
 {
 	setFlag(MAINTAIN_POS_IS_VALID, false);
+	if ((TheGameLogic->getFrame()>=490 && TheGameLogic->getFrame()<=500) || (TheGameLogic->getFrame()>=1090 && TheGameLogic->getFrame()<=1100) || (TheGameLogic->getFrame()>=695 && TheGameLogic->getFrame()<=705)) { Real o = obj->getOrientation(); DEBUG_LOG(("locopos %d obj %d goal %08X %08X dist %08X speed %08X orient %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&goalPos.x, *(UnsignedInt*)&goalPos.y, *(UnsignedInt*)&onPathDistToGoal, *(UnsignedInt*)&desiredSpeed, *(UnsignedInt*)&o)); }
 
 	BodyDamageType bdt = obj->getBodyModule()->getDamageState();
 	Real maxSpeed = getMaxSpeedForCondition(bdt);
@@ -2570,6 +2572,7 @@ void Locomotor::moveTowardsPositionOther(Object* obj, PhysicsBehavior *physics, 
 */
 Bool Locomotor::locoUpdate_maintainCurrentPosition(Object* obj)
 {
+	if ((TheGameLogic->getFrame()>=490 && TheGameLogic->getFrame()<=500) || (TheGameLogic->getFrame()>=1090 && TheGameLogic->getFrame()<=1100) || (TheGameLogic->getFrame()>=695 && TheGameLogic->getFrame()<=705)) DEBUG_LOG(("locomaintain %d obj %d", (Int)TheGameLogic->getFrame(), (Int)obj->getID()));
 	if (!getFlag(MAINTAIN_POS_IS_VALID))
 	{
 		m_maintainPos = *obj->getPosition();

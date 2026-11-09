@@ -2901,6 +2901,7 @@ void AIUpdateInterface::privateMoveToPosition( const Coord3D *pos, CommandSource
 	//doesn't want to get reset when ordered to move.
 	//chooseLocomotorSet(LOCOMOTORSET_NORMAL);
 
+	DEBUG_LOG(("privatemove %d obj %d idle %d src %d pos %08X %08X", (Int)TheGameLogic->getFrame(), (Int)getObject()->getID(), (Int)isIdle(), (Int)cmdSource, *(UnsignedInt*)&pos->x, *(UnsignedInt*)&pos->y));
 	if (!isIdle() && cmdSource == CMD_FROM_AI) {
 		// This is an internally generated move to, and we are in a non-idle state. [8/19/2003]
 		// Our state could be the source of this command, so

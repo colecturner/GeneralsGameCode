@@ -861,6 +861,7 @@ StateReturnType AIStateMachine::updateStateMachine()
 	{
 		// execute this state
 		StateReturnType status = m_temporaryState->update();
+		if ((TheGameLogic->getFrame()>=490 && TheGameLogic->getFrame()<=500) || (TheGameLogic->getFrame()>=1090 && TheGameLogic->getFrame()<=1100) || (TheGameLogic->getFrame()>=695 && TheGameLogic->getFrame()<=705)) DEBUG_LOG(("tempstate %d obj %d update status %d end %d", (Int)TheGameLogic->getFrame(), (Int)getOwner()->getID(), (Int)status, (Int)m_temporaryStateFramEnd));
 		if (m_temporaryStateFramEnd < TheGameLogic->getFrame()) {
 			// ran out of time.
 			if (status == STATE_CONTINUE) {
@@ -966,6 +967,7 @@ StateReturnType AIStateMachine::setTemporaryState( StateID newStateID, Int frame
 			frameLimitCoount = FRAME_COUNT_MAX;
 		}
 		m_temporaryStateFramEnd = TheGameLogic->getFrame()+frameLimitCoount;
+		DEBUG_LOG(("tempstate %d obj %d set %d end %d", (Int)TheGameLogic->getFrame(), (Int)getOwner()->getID(), (Int)newStateID, (Int)m_temporaryStateFramEnd));
 		return ret;
 	}
 	return STATE_FAILURE;
@@ -1789,6 +1791,7 @@ StateReturnType AIInternalMoveToState::update()
 	//}
 
 	Path *thePath = ai->getPath();
+	if ((TheGameLogic->getFrame()>=490 && TheGameLogic->getFrame()<=500) || (TheGameLogic->getFrame()>=1090 && TheGameLogic->getFrame()<=1100) || (TheGameLogic->getFrame()>=695 && TheGameLogic->getFrame()<=705)) DEBUG_LOG(("internalmove %d obj %d waiting %d aiwaiting %d path %d ts %d age %d goal %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), (Int)m_waitingForPath, (Int)ai->isWaitingForPath(), (Int)(thePath!=nullptr), (Int)m_pathTimestamp, (Int)ai->getPathAge(), *(UnsignedInt*)&m_goalPosition.x, *(UnsignedInt*)&m_goalPosition.y));
 	if (m_waitingForPath)
 	{
 		// bump the timer.
