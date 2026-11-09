@@ -1304,7 +1304,7 @@ Real AIUpdateInterface::calculateMaxBlockedSpeed(Object *other) const
 static Bool colLogWin(const Object *o)
 {
 	UnsignedInt f = TheGameLogic->getFrame(); ObjectID id = o->getID();
-	return ((id==433 || id==423) && f>=925 && f<=935) || ((id==887 || id==889) && f>=1340 && f<=1360);
+	return ((id==433 || id==423) && f>=925 && f<=935) || ((id==887 || id==889) && f>=1340 && f<=1360) || ((id==292 || id==281) && f>=840 && f<=850);
 }
 
 //-------------------------------------------------------------------------------------------------
