@@ -585,11 +585,12 @@ private:
 EMPTY_DTOR(DeliverPayloadNugget)
 
 //-------------------------------------------------------------------------------------------------
-static void calcRandomForce(Real minMag, Real maxMag, Real minPitch, Real maxPitch, Coord3D* force)
+static void calcRandomForce(Real minMag, Real maxMag, Real minPitch, Real maxPitch, Coord3D* force, const Object* logObj)
 {
 	Real angle = GameLogicRandomValueReal(0, 2*PI);
 	Real pitch = GameLogicRandomValueReal(minPitch, maxPitch);
 	Real mag = GameLogicRandomValueReal(minMag, maxMag);
+	if (logObj && logObj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d calcRandomForce id %d random angle %08X pitch %08X mag %08X", (Int)TheGameLogic->getFrame(), (Int)logObj->getID(), *(UnsignedInt*)&angle, *(UnsignedInt*)&pitch, *(UnsignedInt*)&mag));
 
 	Matrix3D mtx(1);
 	mtx.Scale(mag);
@@ -628,7 +629,7 @@ public:
       if (p)
       {
 				Coord3D force;
-				calcRandomForce(m_minMag, m_maxMag, m_minPitch, m_maxPitch, &force);
+				calcRandomForce(m_minMag, m_maxMag, m_minPitch, m_maxPitch, &force, nullptr);
 				p->applyForce(&force);
 
 			  Real yaw = GameLogicRandomValueReal( -m_spinRate, m_spinRate );
@@ -959,6 +960,7 @@ protected:
 					if (!m_animSets.empty())
 					{
 						Int which = GameLogicRandomValue(0, m_animSets.size()-1);
+						if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d stuff id %d random animSet %d", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), (Int)which));
 						di->setAnimNames(m_animSets[which].m_animInitial, m_animSets[which].m_animFlying, m_animSets[which].m_animFinal, m_fxFinal);
 					}
 				}
@@ -973,6 +975,7 @@ protected:
 		chunkPos.x = pos->x + offset.x;
 		chunkPos.y = pos->y + offset.y;
 		chunkPos.z = pos->z + offset.z;
+		if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d stuff id %d creator %d pos %08X %08X %08X chunk %08X %08X %08X orient %08X disp %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), (Int)(sourceObj ? sourceObj->getID() : INVALID_ID), *(UnsignedInt*)&pos->x, *(UnsignedInt*)&pos->y, *(UnsignedInt*)&pos->z, *(UnsignedInt*)&chunkPos.x, *(UnsignedInt*)&chunkPos.y, *(UnsignedInt*)&chunkPos.z, *(UnsignedInt*)&orientation, (Int)m_disposition));
 
 		if (!m_particleSysName.isEmpty())
 		{
@@ -994,6 +997,7 @@ protected:
 		// set its beginning health
 		BodyModuleInterface *body = obj->getBodyModule();
 		Real healthPercent = GameLogicRandomValueReal( m_minHealth, m_maxHealth );
+		if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d stuff id %d random health %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&healthPercent));
 		if (body)
 			body->setInitialHealth(healthPercent * 100.0f);
 
@@ -1080,7 +1084,9 @@ protected:
 		{
 			chunkPos.z = 99999.0f;
 			PathfindLayerEnum layer = TheTerrainLogic->getHighestLayerForDestination(&chunkPos);
-			obj->setOrientation(GameLogicRandomValueReal(0.0f, 2 * PI));
+			Real groundOrient = GameLogicRandomValueReal(0.0f, 2 * PI);
+			if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d stuff id %d random groundOrient %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&groundOrient));
+			obj->setOrientation(groundOrient);
 			chunkPos.z = TheTerrainLogic->getLayerHeight( chunkPos.x, chunkPos.y, layer );
 			// ensure we are slightly above the bridge, to account for fudge & sloppy art
 			if (layer != LAYER_GROUND)
@@ -1091,7 +1097,9 @@ protected:
 
 		if( BitIsSet( m_disposition, SEND_IT_OUT ) )
 		{
-			obj->setOrientation(GameLogicRandomValueReal(0.0f, 2 * PI));
+			Real outOrient = GameLogicRandomValueReal(0.0f, 2 * PI);
+			if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d stuff id %d random outOrient %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&outOrient));
+			obj->setOrientation(outOrient);
 			chunkPos.z = TheTerrainLogic->getGroundHeight( chunkPos.x, chunkPos.y );
 			obj->setPosition(&chunkPos);
 			PhysicsBehavior* objUp = obj->getPhysics();
@@ -1108,8 +1116,10 @@ protected:
 				force.x = GameLogicRandomValueReal( -horizForce, horizForce );
 				force.y = GameLogicRandomValueReal( -horizForce, horizForce );
 				force.z = 0;
+				if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d stuff id %d random outForce %08X %08X %08X horiz %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&force.x, *(UnsignedInt*)&force.y, *(UnsignedInt*)&force.z, *(UnsignedInt*)&horizForce));
 
 				objUp->applyForce(&force);
+				if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) { const Coord3D *iv = objUp->getVelocity(); DEBUG_LOG(("debr %d stuff id %d outVelocity %08X %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&iv->x, *(UnsignedInt*)&iv->y, *(UnsignedInt*)&iv->z)); }
 				if (m_orientInForceDirection)
 					orientation = WWMath::Atan2(force.y, force.x);
 
@@ -1159,6 +1169,7 @@ protected:
 				Real yaw = GameLogicRandomValueReal( -yawRate, yawRate );
 				Real roll = GameLogicRandomValueReal( -rollRate, rollRate );
 				Real pitch = GameLogicRandomValueReal( -pitchRate, pitchRate );
+				if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d stuff id %d random yaw %08X roll %08X pitch %08X rates %08X %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&yaw, *(UnsignedInt*)&roll, *(UnsignedInt*)&pitch, *(UnsignedInt*)&yawRate, *(UnsignedInt*)&rollRate, *(UnsignedInt*)&pitchRate));
 				DUMPREAL(yaw);
 				DUMPREAL(roll);
 				DUMPREAL(pitch);
@@ -1189,14 +1200,16 @@ protected:
 				}
 				else
 				{
-					calcRandomForce(m_minMag, m_maxMag, m_minPitch, m_maxPitch, &force);
+					calcRandomForce(m_minMag, m_maxMag, m_minPitch, m_maxPitch, &force, obj);
 					DUMPREAL(m_minMag);
 					DUMPREAL(m_maxMag);
 					DUMPREAL(m_minPitch);
 					DUMPREAL(m_maxPitch);
 					DUMPCOORD3D(&force);
 				}
+				if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d stuff id %d random force %08X %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&force.x, *(UnsignedInt*)&force.y, *(UnsignedInt*)&force.z));
 				objUp->applyForce(&force);
+				if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) { const Coord3D *iv = objUp->getVelocity(); DEBUG_LOG(("debr %d stuff id %d velocity %08X %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&iv->x, *(UnsignedInt*)&iv->y, *(UnsignedInt*)&iv->z)); }
 				if (m_orientInForceDirection)
 				{
 					orientation = WWMath::Atan2(force.y, force.x);
@@ -1220,6 +1233,7 @@ protected:
 				Real yaw = GameLogicRandomValueReal( -m_dispositionIntensity, m_dispositionIntensity );
 				Real roll = GameLogicRandomValueReal( -m_dispositionIntensity, m_dispositionIntensity );
 				Real pitch = GameLogicRandomValueReal( -m_dispositionIntensity, m_dispositionIntensity );
+				if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d stuff id %d random whirl yaw %08X roll %08X pitch %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&yaw, *(UnsignedInt*)&roll, *(UnsignedInt*)&pitch));
 
 				objUp->setYawRate(yaw);
 				objUp->setRollRate(roll);
@@ -1367,6 +1381,7 @@ protected:
 				DEBUG_CRASH( ("OCL::reallyCreate() failed to create debris %s.", tmpl->getName().str() ) );
 				return firstObject;
 			}
+			if (debris->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d create id %d creator %d tpl %s model %s pick %d pos %08X %08X %08X orient %08X", (Int)TheGameLogic->getFrame(), (Int)debris->getID(), (Int)(sourceObj ? sourceObj->getID() : INVALID_ID), tmpl->getName().str(), m_names[pick].str(), (Int)pick, *(UnsignedInt*)&pos->x, *(UnsignedInt*)&pos->y, *(UnsignedInt*)&pos->z, *(UnsignedInt*)&orientation));
 			if( !firstObject )
 			{
 				firstObject = debris;
@@ -1391,6 +1406,7 @@ protected:
 			{
 				FindPositionOptions fpOptions;
 				fpOptions.minRadius = GameLogicRandomValueReal(m_minDistanceAFormation, m_minDistanceBFormation);
+				if (debris->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) DEBUG_LOG(("debr %d create id %d random spreadMin %08X", (Int)TheGameLogic->getFrame(), (Int)debris->getID(), *(UnsignedInt*)&fpOptions.minRadius));
 				fpOptions.maxRadius = m_maxDistanceFormation;
 				fpOptions.flags = FPF_USE_HIGHEST_LAYER;
 

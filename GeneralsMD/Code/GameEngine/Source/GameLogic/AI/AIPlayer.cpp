@@ -515,14 +515,21 @@ Object *AIPlayer::buildStructureNow(const ThingTemplate *bldgPlan, BuildListInfo
 // ------------------------------------------------------------------------------------------------
 Object *AIPlayer::buildStructureWithDozer(const ThingTemplate *bldgPlan, BuildListInfo *info)
 {
+	if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer entry %s infoObj %d", (Int)TheGameLogic->getFrame(), bldgPlan->getName().str(), (Int)info->getObjectID()));
 	// Find a dozer.
 	Object *dozer = findDozer(info->getLocation());
 	if (dozer==nullptr) {
+		if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer no dozer", (Int)TheGameLogic->getFrame()));
 		return nullptr;
 	}
+	if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer dozer %d", (Int)TheGameLogic->getFrame(), (Int)dozer->getID()));
 	// Check available funds.
 	Money *money = m_player->getMoney();
-	if (money->countMoney()<bldgPlan->calcCostToBuild(m_player)) {
+	Int moneyCount = money->countMoney();
+	Int cost = bldgPlan->calcCostToBuild(m_player);
+	if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer cost %d money %d", (Int)TheGameLogic->getFrame(), (Int)cost, (Int)moneyCount));
+	if (moneyCount<cost) {
+		if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer insufficient money", (Int)TheGameLogic->getFrame()));
 		return nullptr;
 	}
 	// construct the building
@@ -530,23 +537,28 @@ Object *AIPlayer::buildStructureWithDozer(const ThingTemplate *bldgPlan, BuildLi
 	pos.z += TheTerrainLogic->getGroundHeight(pos.x, pos.y);
 	if( !dozer->getAIUpdateInterface() )
 	{
+		if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer dozer %d no ai", (Int)TheGameLogic->getFrame(), (Int)dozer->getID()));
 		return nullptr;
 	}
 	Real angle = info->getAngle();
- 	if( TheBuildAssistant->isLocationLegalToBuild( &pos, bldgPlan, angle,
+	LegalBuildCode legal = TheBuildAssistant->isLocationLegalToBuild( &pos, bldgPlan, angle,
 																								 BuildAssistant::NO_ENEMY_OBJECT_OVERLAP,
-																								 dozer, m_player ) != LBC_OK ) {
+																								 dozer, m_player );
+	if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer legalEnemy %d pos %08X %08X", (Int)TheGameLogic->getFrame(), (Int)legal, *(UnsignedInt*)&pos.x, *(UnsignedInt*)&pos.y));
+	if( legal != LBC_OK ) {
 		// If there's enemy units or structures, don't build/rebuild.
 		TheTerrainVisual->removeAllBibs();	// isLocationLegalToBuild adds bib feedback, turn it off.  jba.
 		return nullptr;
 	}
 
 	// validate the the position to build at is valid
-	if( TheBuildAssistant->isLocationLegalToBuild( &pos, bldgPlan, angle,
+	legal = TheBuildAssistant->isLocationLegalToBuild( &pos, bldgPlan, angle,
 																								 BuildAssistant::CLEAR_PATH |
 																								 BuildAssistant::TERRAIN_RESTRICTIONS |
 																								 BuildAssistant::NO_OBJECT_OVERLAP,
-																								 dozer, m_player ) != LBC_OK ) {
+																								 dozer, m_player );
+	if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer legalPlace %d pos %08X %08X", (Int)TheGameLogic->getFrame(), (Int)legal, *(UnsignedInt*)&pos.x, *(UnsignedInt*)&pos.y));
+	if( legal != LBC_OK ) {
 			// Warn.
 			AsciiString bldgName = bldgPlan->getName();
 			bldgName.concat(" - Dozer unable to place.  Attempting to adjust position.");
@@ -606,11 +618,14 @@ Object *AIPlayer::buildStructureWithDozer(const ThingTemplate *bldgPlan, BuildLi
 				if (valid) break;
 			}
 			if (valid) pos = newPos;
+			if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer search valid %d pos %08X %08X", (Int)TheGameLogic->getFrame(), (Int)valid, *(UnsignedInt*)&pos.x, *(UnsignedInt*)&pos.y));
 			if (!valid) {
-				valid = TheBuildAssistant->isLocationLegalToBuild( &pos, bldgPlan, angle,
+				LegalBuildCode fallbackLegal = TheBuildAssistant->isLocationLegalToBuild( &pos, bldgPlan, angle,
 																						 BuildAssistant::NO_ENEMY_OBJECT_OVERLAP,
-																						 dozer, m_player ) == LBC_OK;
-				if (!valid) {
+																						 dozer, m_player );
+				if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer fallbackLegal %d", (Int)TheGameLogic->getFrame(), (Int)fallbackLegal));
+				if (fallbackLegal != LBC_OK) {
+					if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer give up placement", (Int)TheGameLogic->getFrame()));
 					return nullptr;
 				}
 			}
@@ -631,6 +646,7 @@ Object *AIPlayer::buildStructureWithDozer(const ThingTemplate *bldgPlan, BuildLi
 																						&pos,
 																						angle,
 																						m_player );
+	if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 buildStructureWithDozer created %d", (Int)TheGameLogic->getFrame(), (Int)(bldg ? bldg->getID() : INVALID_ID)));
 
 
 
@@ -706,15 +722,17 @@ Object *AIPlayer::buildStructureWithDozer(const ThingTemplate *bldgPlan, BuildLi
 // ------------------------------------------------------------------------------------------------
 void AIPlayer::processBaseBuilding()
 {
+	if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer processBase entry ready %d structTimer %d buildDelay %d money %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure, (Int)m_structureTimer, (Int)m_buildDelay, (Int)m_player->getMoney()->countMoney()));
 	//
 	// Refresh base buildings. Scan through list, if a building is missing,
 	// rebuild it, unless it's rebuild count is zero.
 	//
 	if (m_readyToBuildStructure)
 	{
-
+		Int buildIndex = 0;
 		for( BuildListInfo *info = m_player->getBuildList(); info; info = info->getNext() )
 		{
+			Int curIndex = buildIndex++;
 			AsciiString name = info->getTemplateName();
 			if (name.isEmpty()) continue;
 			const ThingTemplate *bldgPlan = TheThingFactory->findTemplate( name );
@@ -722,6 +740,7 @@ void AIPlayer::processBaseBuilding()
 				DEBUG_LOG(("*** ERROR - Build list building '%s' doesn't exist.", name.str()));
 				continue;
 			}
+			if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer entry idx %d tpl %s objID %d under %d pri %d auto %d rebuilds %d", (Int)TheGameLogic->getFrame(), (Int)curIndex, name.str(), (Int)info->getObjectID(), (Int)info->isUnderConstruction(), (Int)info->isPriorityBuild(), (Int)info->isAutomaticBuild(), (Int)info->getNumRebuilds()));
 			// check for hole.
 			if (info->getObjectID() != INVALID_ID) {
 				// used to have a building.
@@ -793,6 +812,7 @@ void AIPlayer::processBaseBuilding()
 
 #ifdef USE_DOZER
 					// dozer-construct the building
+					if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer chosen %s infoObj %d", (Int)TheGameLogic->getFrame(), bldgPlan->getName().str(), (Int)info->getObjectID()));
 					bldg = buildStructureWithDozer(bldgPlan, info);
 					// store the object with the build order
 					if (bldg)
@@ -801,11 +821,15 @@ void AIPlayer::processBaseBuilding()
 						info->decrementNumRebuilds();
 
 						m_readyToBuildStructure = false;
+						if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set ready %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure));
 						m_structureTimer = TheAI->getAiData()->m_structureSeconds*LOGICFRAMES_PER_SECOND;
+						if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set structTimer %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 						if (m_player->getMoney()->countMoney() < TheAI->getAiData()->m_resourcesPoor) {
 							m_structureTimer = m_structureTimer/TheAI->getAiData()->m_structuresPoorMod;
+							if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set structTimer poor %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 						}	else if (m_player->getMoney()->countMoney() > TheAI->getAiData()->m_resourcesWealthy) {
 							m_structureTimer = m_structureTimer/TheAI->getAiData()->m_structuresWealthyMod;
+							if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set structTimer wealthy %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 						}
 						m_frameLastBuildingBuilt = TheGameLogic->getFrame();
 						// only build one building per delay loop
@@ -818,6 +842,7 @@ void AIPlayer::processBaseBuilding()
 					if (TheGameLogic->getFrame() - m_frameLastBuildingBuilt < framesToBuild)
 					{
 						m_buildDelay = framesToBuild - (TheGameLogic->getFrame() - m_frameLastBuildingBuilt);
+						if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set buildDelay %d", (Int)TheGameLogic->getFrame(), (Int)m_buildDelay));
 						return;
 					}	else {
 						// building is missing, (re)build it
@@ -829,6 +854,7 @@ void AIPlayer::processBaseBuilding()
 							m_player->getMoney()->withdraw( cost );
 
 							// inst-construct the building
+							if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer chosenNow %s infoObj %d", (Int)TheGameLogic->getFrame(), bldgPlan->getName().str(), (Int)info->getObjectID()));
 							bldg = buildStructureNow(bldgPlan, info);
 							// store the object with the build order
 							if (bldg)
@@ -837,11 +863,15 @@ void AIPlayer::processBaseBuilding()
 								info->decrementNumRebuilds();
 
 								m_readyToBuildStructure = false;
+								if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set ready %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure));
 								m_structureTimer = TheAI->getAiData()->m_structureSeconds*LOGICFRAMES_PER_SECOND;
+								if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set structTimer %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 								if (m_player->getMoney()->countMoney() < TheAI->getAiData()->m_resourcesPoor) {
 									m_structureTimer = m_structureTimer/TheAI->getAiData()->m_structuresPoorMod;
+									if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set structTimer poor %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 								}	else if (m_player->getMoney()->countMoney() > TheAI->getAiData()->m_resourcesWealthy) {
 									m_structureTimer = m_structureTimer/TheAI->getAiData()->m_structuresWealthyMod;
+									if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set structTimer wealthy %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 								}
 								m_frameLastBuildingBuilt = TheGameLogic->getFrame();
 								// only build one building per delay loop
@@ -2304,6 +2334,7 @@ Object *AIPlayer::findSupplyCenter(Int minimumCash)
 // ------------------------------------------------------------------------------------------------
 void AIPlayer::buildAIBaseDefense(Bool flank)
 {
+	if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && (m_player->getPlayerIndex()==4 || m_player->getPlayerIndex()==5)) DEBUG_LOG(("bdef %d p%d AIPlayer buildAIBaseDefense unsupported flank %d", (Int)TheGameLogic->getFrame(), (Int)m_player->getPlayerIndex(), (Int)flank));
 	//
 	AsciiString teamStr = "Error : Solo ai doesn't support buildAIBaseDefense. '";
 	TheScriptEngine->AppendDebugMessage(teamStr, false);
@@ -2314,6 +2345,7 @@ void AIPlayer::buildAIBaseDefense(Bool flank)
 // ------------------------------------------------------------------------------------------------
 void AIPlayer::buildAIBaseDefenseStructure(const AsciiString &thingName, Bool flank)
 {
+	if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && (m_player->getPlayerIndex()==4 || m_player->getPlayerIndex()==5)) DEBUG_LOG(("bdef %d p%d AIPlayer buildAIBaseDefenseStructure unsupported %s flank %d", (Int)TheGameLogic->getFrame(), (Int)m_player->getPlayerIndex(), thingName.str(), (Int)flank));
 	//
 	AsciiString teamStr = "Error : Solo ai doesn't support buildAIBaseDefenseStructure. '";
 	TheScriptEngine->AppendDebugMessage(teamStr, false);
@@ -2770,17 +2802,21 @@ void AIPlayer::queueUnits()
 void AIPlayer::doBaseBuilding()
 {
 	if (m_player->getCanBuildBase()) {
+		if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer doBase entry ready %d structTimer %d buildDelay %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure, (Int)m_structureTimer, (Int)m_buildDelay));
 		// See if we are ready to start trying a structure.
 		if (!m_readyToBuildStructure) {
 			m_structureTimer--;
+			if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set structTimer dec %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 			if (m_structureTimer<=0) {
 				m_readyToBuildStructure = true;
 				m_buildDelay = 0;
+				if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set ready %d buildDelay %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure, (Int)m_buildDelay));
 			}
 		}
 		// This timer is to keep from banging on the logic each frame.  If something interesting
 		// happens, like a building is added or a unit finished, the timers are shortcut.
 		m_buildDelay--;
+		if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set buildDelay dec %d", (Int)TheGameLogic->getFrame(), (Int)m_buildDelay));
 		if (m_buildDelay<1) {
 			if (m_readyToBuildStructure) {
 				processBaseBuilding();
@@ -2788,6 +2824,7 @@ void AIPlayer::doBaseBuilding()
 			if (m_buildDelay<1) {
 				// processBaseBuilding may reset m_buildDelay.
 				m_buildDelay = 2*LOGICFRAMES_PER_SECOND; // check again in 2 seconds.
+				if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer set buildDelay %d", (Int)TheGameLogic->getFrame(), (Int)m_buildDelay));
 			}
 			// Note that this timer gets shortcut when a building is completed.
 		}
@@ -3063,7 +3100,9 @@ void AIPlayer::update()
 {
 	//USE_PERF_TIMER(AIPlayer_update)
 
+	if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer update before doBase ready %d structTimer %d buildDelay %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure, (Int)m_structureTimer, (Int)m_buildDelay));
 	doBaseBuilding();		// See if it's time to build another building.
+	if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 AIPlayer update after doBase ready %d structTimer %d buildDelay %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure, (Int)m_structureTimer, (Int)m_buildDelay));
 
 	checkReadyTeams(); // See if any teams are ready to start.
 

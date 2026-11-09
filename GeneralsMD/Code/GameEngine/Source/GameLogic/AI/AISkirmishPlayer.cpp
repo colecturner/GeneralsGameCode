@@ -93,6 +93,7 @@ AISkirmishPlayer::~AISkirmishPlayer()
  */
 void AISkirmishPlayer::processBaseBuilding()
 {
+	if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 processBase entry ready %d structTimer %d buildDelay %d money %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure, (Int)m_structureTimer, (Int)m_buildDelay, (Int)m_player->getMoney()->countMoney()));
 	//
 	// Refresh base buildings. Scan through list, if a building is missing,
 	// rebuild it, unless it's rebuild count is zero.
@@ -107,8 +108,10 @@ void AISkirmishPlayer::processBaseBuilding()
 		BuildListInfo	*powerInfo = nullptr;
 		Bool isUnderPowered = !m_player->getEnergy()->hasSufficientPower();
 		Bool powerUnderConstruction = false;
+		Int buildIndex = 0;
 		for( BuildListInfo *info = m_player->getBuildList(); info; info = info->getNext() )
 		{
+			Int curIndex = buildIndex++;
 			AsciiString name = info->getTemplateName();
 			if (name.isEmpty()) continue;
 			const ThingTemplate *curPlan = TheThingFactory->findTemplate( name );
@@ -117,6 +120,7 @@ void AISkirmishPlayer::processBaseBuilding()
 				continue;
 			}
 			bldg = TheGameLogic->findObjectByID( info->getObjectID() );
+			if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 entry idx %d tpl %s objID %d built %d under %d pri %d auto %d rebuilds %d", (Int)TheGameLogic->getFrame(), (Int)curIndex, name.str(), (Int)info->getObjectID(), (Int)(bldg!=nullptr), (Int)info->isUnderConstruction(), (Int)info->isPriorityBuild(), (Int)info->isAutomaticBuild(), (Int)info->getNumRebuilds()));
 			// check for hole.
 			if (info->getObjectID() != INVALID_ID) {
 				// used to have a building.
@@ -194,7 +198,9 @@ void AISkirmishPlayer::processBaseBuilding()
 				continue; // already built.
 			}
 			// Make sure it is safe to build here.
-			if (!isLocationSafe(info->getLocation(), curPlan)) {
+			Bool locationSafe = isLocationSafe(info->getLocation(), curPlan);
+			if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 idx %d safe %d", (Int)TheGameLogic->getFrame(), (Int)curIndex, (Int)locationSafe));
+			if (!locationSafe) {
 				continue;
 			}
 			if (info->isPriorityBuild()) {
@@ -217,13 +223,16 @@ void AISkirmishPlayer::processBaseBuilding()
 				continue; // marked to not build automatically.
 			}
 			Object *dozer = findDozer(info->getLocation());
+			if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 idx %d dozer %d", (Int)TheGameLogic->getFrame(), (Int)curIndex, (Int)(dozer ? dozer->getID() : INVALID_ID)));
 			if (dozer==nullptr) {
 				if (isUnderPowered) {
 					queueDozer();
 				}
 				continue;
 			}
-			if (TheBuildAssistant->canMakeUnit(dozer, bldgPlan)!=CANMAKE_OK) {
+			CanMakeType canMake = TheBuildAssistant->canMakeUnit(dozer, bldgPlan);
+			if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 idx %d canMake %d", (Int)TheGameLogic->getFrame(), (Int)curIndex, (Int)canMake));
+			if (canMake!=CANMAKE_OK) {
 				if (info->isBuildable()) {
 					AsciiString bldgName = info->getTemplateName();
 					bldgName.concat(" - Dozer unable to build - money or technology missing.");
@@ -248,6 +257,7 @@ void AISkirmishPlayer::processBaseBuilding()
 			}
 		}
 		if (bldgPlan && bldgInfo) {
+			if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 chosen %s infoObj %d", (Int)TheGameLogic->getFrame(), bldgPlan->getName().str(), (Int)bldgInfo->getObjectID()));
 #ifdef USE_DOZER
 			// dozer-construct the building
 			bldg = buildStructureWithDozer(bldgPlan, bldgInfo);
@@ -258,11 +268,15 @@ void AISkirmishPlayer::processBaseBuilding()
 				bldgInfo->decrementNumRebuilds();
 
 				m_readyToBuildStructure = false;
+				if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set ready %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure));
 				m_structureTimer = TheAI->getAiData()->m_structureSeconds*LOGICFRAMES_PER_SECOND;
+				if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set structTimer %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 				if (m_player->getMoney()->countMoney() < TheAI->getAiData()->m_resourcesPoor) {
 					m_structureTimer = m_structureTimer/TheAI->getAiData()->m_structuresPoorMod;
+					if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set structTimer poor %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 				}	else if (m_player->getMoney()->countMoney() > TheAI->getAiData()->m_resourcesWealthy) {
 					m_structureTimer = m_structureTimer/TheAI->getAiData()->m_structuresWealthyMod;
+					if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set structTimer wealthy %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 				}
 				m_frameLastBuildingBuilt = TheGameLogic->getFrame();
 				// only build one building per delay loop
@@ -274,6 +288,7 @@ void AISkirmishPlayer::processBaseBuilding()
 			if (TheGameLogic->getFrame() - m_frameLastBuildingBuilt < framesToBuild)
 			{
 				m_buildDelay = framesToBuild - (TheGameLogic->getFrame() - m_frameLastBuildingBuilt);
+				if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set buildDelay %d", (Int)TheGameLogic->getFrame(), (Int)m_buildDelay));
 				return;
 			}	else {
 				// building is missing, (re)build it
@@ -293,11 +308,15 @@ void AISkirmishPlayer::processBaseBuilding()
 						bldgInfo->decrementNumRebuilds();
 
 						m_readyToBuildStructure = false;
+						if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set ready %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure));
 						m_structureTimer = TheAI->getAiData()->m_structureSeconds*LOGICFRAMES_PER_SECOND;
+						if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set structTimer %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 						if (m_player->getMoney()->countMoney() < TheAI->getAiData()->m_resourcesPoor) {
 							m_structureTimer = m_structureTimer/TheAI->getAiData()->m_structuresPoorMod;
+							if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set structTimer poor %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 						}	else if (m_player->getMoney()->countMoney() > TheAI->getAiData()->m_resourcesWealthy) {
 							m_structureTimer = m_structureTimer/TheAI->getAiData()->m_structuresWealthyMod;
+							if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set structTimer wealthy %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 						}
 						m_frameLastBuildingBuilt = TheGameLogic->getFrame();
 					}
@@ -565,6 +584,7 @@ Player *AISkirmishPlayer::getAiEnemy()
 */
 void AISkirmishPlayer::buildAIBaseDefense(Bool flank)
 {
+	if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && (m_player->getPlayerIndex()==4 || m_player->getPlayerIndex()==5)) DEBUG_LOG(("bdef %d p%d buildAIBaseDefense entry flank %d", (Int)TheGameLogic->getFrame(), (Int)m_player->getPlayerIndex(), (Int)flank));
 	const AISideInfo *resInfo = TheAI->getAiData()->m_sideInfo;
 	AsciiString defenseTemplateName;
 	while (resInfo) {
@@ -576,6 +596,8 @@ void AISkirmishPlayer::buildAIBaseDefense(Bool flank)
 	}
 	if (resInfo) {
 		buildAIBaseDefenseStructure(resInfo->m_baseDefenseStructure1, flank);
+	} else {
+		if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && (m_player->getPlayerIndex()==4 || m_player->getPlayerIndex()==5)) DEBUG_LOG(("bdef %d p%d buildAIBaseDefense no side info flank %d", (Int)TheGameLogic->getFrame(), (Int)m_player->getPlayerIndex(), (Int)flank));
 	}
 }
 
@@ -603,8 +625,10 @@ void AISkirmishPlayer::buildAIBaseDefense(Bool flank)
 	*/
 void AISkirmishPlayer::buildAIBaseDefenseStructure(const AsciiString &thingName, Bool flank)
 {
+	if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && (m_player->getPlayerIndex()==4 || m_player->getPlayerIndex()==5)) DEBUG_LOG(("bdef %d p%d buildAIBaseDefenseStructure entry %s flank %d", (Int)TheGameLogic->getFrame(), (Int)m_player->getPlayerIndex(), thingName.str(), (Int)flank));
 	const ThingTemplate *tTemplate = TheThingFactory->findTemplate(thingName);
 	if (tTemplate==nullptr) {
+		if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && (m_player->getPlayerIndex()==4 || m_player->getPlayerIndex()==5)) DEBUG_LOG(("bdef %d p%d buildAIBaseDefenseStructure missing template %s", (Int)TheGameLogic->getFrame(), (Int)m_player->getPlayerIndex(), thingName.str()));
 		DEBUG_CRASH(("Couldn't find base defense structure '%s' for side %s", thingName.str(), m_player->getSide().str()));
 		return;
 	}
@@ -625,7 +649,10 @@ void AISkirmishPlayer::buildAIBaseDefenseStructure(const AsciiString &thingName,
 		if (way) {
 			goalPos = *way->getLocation();
 		} else {
-			if (flank) return;
+			if (flank) {
+				if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && (m_player->getPlayerIndex()==4 || m_player->getPlayerIndex()==5)) DEBUG_LOG(("bdef %d p%d buildAIBaseDefenseStructure no waypoint flank %d", (Int)TheGameLogic->getFrame(), (Int)m_player->getPlayerIndex(), (Int)flank));
+				return;
+			}
 			Region2D bounds;
 			getPlayerStructureBounds(&bounds, getMyEnemyPlayerIndex());
 			goalPos.x = bounds.lo.x + bounds.width()/2;
@@ -677,7 +704,10 @@ void AISkirmishPlayer::buildAIBaseDefenseStructure(const AsciiString &thingName,
 			}
 		}
 
-		if (angle > PI/3) break;
+		if (angle > PI/3) {
+			if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && (m_player->getPlayerIndex()==4 || m_player->getPlayerIndex()==5)) DEBUG_LOG(("bdef %d p%d buildAIBaseDefenseStructure angle break %08X", (Int)TheGameLogic->getFrame(), (Int)m_player->getPlayerIndex(), *(UnsignedInt*)&angle));
+			break;
+		}
 		Real s = WWMath::Sin(angle);
 		Real c = WWMath::Cos(angle);
 
@@ -705,6 +735,7 @@ void AISkirmishPlayer::buildAIBaseDefenseStructure(const AsciiString &thingName,
 		} else {
 			m_curFrontBaseDefense++;
 		}
+		if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && (m_player->getPlayerIndex()==4 || m_player->getPlayerIndex()==5)) DEBUG_LOG(("bdef %d p%d buildAIBaseDefenseStructure canBuild %d pos %08X %08X flank %d", (Int)TheGameLogic->getFrame(), (Int)m_player->getPlayerIndex(), (Int)canBuild, *(UnsignedInt*)&buildPos.x, *(UnsignedInt*)&buildPos.y, (Int)flank));
 		if (canBuild) {
 			m_player->addToPriorityBuildList(thingName, &buildPos, placeAngle);
 			break;
@@ -874,20 +905,25 @@ void AISkirmishPlayer::processTeamBuilding()
 void AISkirmishPlayer::doBaseBuilding()
 {
 	if (m_player->getCanBuildBase()) {
+		if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 doBase entry ready %d structTimer %d buildDelay %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure, (Int)m_structureTimer, (Int)m_buildDelay));
 		// See if we are ready to start trying a structure.
 		if (!m_readyToBuildStructure) {
 			m_structureTimer--;
+			if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set structTimer dec %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 			if (m_structureTimer<=0) {
 				m_readyToBuildStructure = true;
 				m_buildDelay = 0;
+				if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set ready %d buildDelay %d", (Int)TheGameLogic->getFrame(), (Int)m_readyToBuildStructure, (Int)m_buildDelay));
 			}
 			if (m_structureTimer > 3*LOGICFRAMES_PER_SECOND) {
 				m_structureTimer = 3*LOGICFRAMES_PER_SECOND;
+				if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set structTimer cap %d", (Int)TheGameLogic->getFrame(), (Int)m_structureTimer));
 			}
 		}
 		// This timer is to keep from banging on the logic each frame.  If something interesting
 		// happens, like a building is added or a unit finished, the timers are shortcut.
 		m_buildDelay--;
+		if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set buildDelay dec %d", (Int)TheGameLogic->getFrame(), (Int)m_buildDelay));
 		if (m_buildDelay<1) {
 			if (m_readyToBuildStructure) {
 				processBaseBuilding();
@@ -895,6 +931,7 @@ void AISkirmishPlayer::doBaseBuilding()
 			if (m_buildDelay<1) {
 				// processBaseBuilding may reset m_buildDelay.
 				m_buildDelay = 2*LOGICFRAMES_PER_SECOND; // check again in 2 seconds.
+				if (TheGameLogic->getFrame()>=1400 && TheGameLogic->getFrame()<=1530 && m_player->getPlayerIndex()==5) DEBUG_LOG(("bbuild %d p5 set buildDelay %d", (Int)TheGameLogic->getFrame(), (Int)m_buildDelay));
 			}
 			// Note that this timer gets shortcut when a building is completed.
 		}

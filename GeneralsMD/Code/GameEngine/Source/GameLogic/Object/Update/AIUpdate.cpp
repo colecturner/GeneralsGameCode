@@ -1262,11 +1262,16 @@ Real AIUpdateInterface::calculateMaxBlockedSpeed(Object *other) const
 	vectorToOther.y = other->getPosition()->y - getObject()->getPosition()->y;
 	vectorToOther.normalize();
 	Real dotProduct = vectorToOther.x*otherDir.x	+ vectorToOther.y*otherDir.y;
-	if (dotProduct<0) return 0; // They are running into us.
+	Real otherDotProduct = dotProduct;
+	if (dotProduct<0) {
+		if (getObject()->getID()==243 && TheGameLogic->getFrame()>=1350 && TheGameLogic->getFrame()<=1362) DEBUG_LOG(("blk %d obj 243 other %d vec %08X %08X dotOther %08X dotOur %08X away %08X max %08X cur %08X return 0", (Int)TheGameLogic->getFrame(), (Int)other->getID(), *(UnsignedInt*)&vectorToOther.x, *(UnsignedInt*)&vectorToOther.y, *(UnsignedInt*)&otherDotProduct, (UnsignedInt)0, (UnsignedInt)0, (UnsignedInt)0, *(UnsignedInt*)&m_curMaxBlockedSpeed));
+		return 0; // They are running into us.
+	}
 
 	Real speedFactor = dotProduct;
 	PhysicsBehavior *otherPhysics = other->getPhysics();
 	if (!otherPhysics) {
+		if (getObject()->getID()==243 && TheGameLogic->getFrame()>=1350 && TheGameLogic->getFrame()<=1362) DEBUG_LOG(("blk %d obj 243 other %d vec %08X %08X dotOther %08X dotOur %08X return cur %08X no physics", (Int)TheGameLogic->getFrame(), (Int)other->getID(), *(UnsignedInt*)&vectorToOther.x, *(UnsignedInt*)&vectorToOther.y, *(UnsignedInt*)&otherDotProduct, (UnsignedInt)0, *(UnsignedInt*)&m_curMaxBlockedSpeed));
 		return m_curMaxBlockedSpeed;
 	}
 	Coord3D otherVel = *otherPhysics->getVelocity();
@@ -1276,15 +1281,21 @@ Real AIUpdateInterface::calculateMaxBlockedSpeed(Object *other) const
 
 	// Now calculate the amount we are moving relative to towards them...
 	dotProduct = vectorToOther.x*ourDir.x	+ vectorToOther.y*ourDir.y;
+	Real ourDotProduct = dotProduct;
 	if (dotProduct<=0) {
 		// Unexpected - we are moving away.  Shouldn't be blocked...
+		if (getObject()->getID()==243 && TheGameLogic->getFrame()>=1350 && TheGameLogic->getFrame()<=1362) DEBUG_LOG(("blk %d obj 243 other %d vec %08X %08X dotOther %08X dotOur %08X otherVel %08X %08X away %08X return cur %08X moving away", (Int)TheGameLogic->getFrame(), (Int)other->getID(), *(UnsignedInt*)&vectorToOther.x, *(UnsignedInt*)&vectorToOther.y, *(UnsignedInt*)&otherDotProduct, *(UnsignedInt*)&ourDotProduct, *(UnsignedInt*)&otherVel.x, *(UnsignedInt*)&otherVel.y, *(UnsignedInt*)&awaySpeed, *(UnsignedInt*)&m_curMaxBlockedSpeed));
 		return m_curMaxBlockedSpeed;
 	}
 	Real maxSpeed = awaySpeed / dotProduct;
 	if (other->getFormationID()!=NO_FORMATION_ID && getObject()->getFormationID()==other->getFormationID()) {
 		maxSpeed *= 0.55f; // don't let formations crowd each other.
 	}
-	if (maxSpeed>m_curMaxBlockedSpeed) return m_curMaxBlockedSpeed;
+	if (maxSpeed>m_curMaxBlockedSpeed) {
+		if (getObject()->getID()==243 && TheGameLogic->getFrame()>=1350 && TheGameLogic->getFrame()<=1362) DEBUG_LOG(("blk %d obj 243 other %d vec %08X %08X dotOther %08X dotOur %08X otherVel %08X %08X away %08X max %08X cur %08X return cur", (Int)TheGameLogic->getFrame(), (Int)other->getID(), *(UnsignedInt*)&vectorToOther.x, *(UnsignedInt*)&vectorToOther.y, *(UnsignedInt*)&otherDotProduct, *(UnsignedInt*)&ourDotProduct, *(UnsignedInt*)&otherVel.x, *(UnsignedInt*)&otherVel.y, *(UnsignedInt*)&awaySpeed, *(UnsignedInt*)&maxSpeed, *(UnsignedInt*)&m_curMaxBlockedSpeed));
+		return m_curMaxBlockedSpeed;
+	}
+	if (getObject()->getID()==243 && TheGameLogic->getFrame()>=1350 && TheGameLogic->getFrame()<=1362) DEBUG_LOG(("blk %d obj 243 other %d vec %08X %08X dotOther %08X dotOur %08X otherVel %08X %08X away %08X max %08X cur %08X return max", (Int)TheGameLogic->getFrame(), (Int)other->getID(), *(UnsignedInt*)&vectorToOther.x, *(UnsignedInt*)&vectorToOther.y, *(UnsignedInt*)&otherDotProduct, *(UnsignedInt*)&ourDotProduct, *(UnsignedInt*)&otherVel.x, *(UnsignedInt*)&otherVel.y, *(UnsignedInt*)&awaySpeed, *(UnsignedInt*)&maxSpeed, *(UnsignedInt*)&m_curMaxBlockedSpeed));
 	return maxSpeed;
 }
 
@@ -2241,6 +2252,7 @@ UpdateSleepTime AIUpdateInterface::doLocomotor()
 							}
 						}
 
+						if (getObject()->getID()==243 && TheGameLogic->getFrame()>=1350 && TheGameLogic->getFrame()<=1362) DEBUG_LOG(("blk %d obj 243 doLoco blocked %d blockedFrames %d bump %08X speed %08X curMax %08X dist %08X", (Int)TheGameLogic->getFrame(), (Int)blocked, (Int)m_blockedFrames, *(UnsignedInt*)&m_bumpSpeedLimit, *(UnsignedInt*)&speed, *(UnsignedInt*)&m_curMaxBlockedSpeed, *(UnsignedInt*)&onPathDistToGoal));
 						m_curLocomotor->locoUpdate_moveTowardsPosition(getObject(), goalPos,
 							onPathDistToGoal+getPathExtraDistance(), speed, &blocked);
 

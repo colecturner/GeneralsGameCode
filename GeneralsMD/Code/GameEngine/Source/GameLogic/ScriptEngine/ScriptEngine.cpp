@@ -6829,6 +6829,21 @@ void ScriptEngine::enableScript( ScriptAction *pAction )
 }
 
 //-------------------------------------------------------------------------------------------------
+/** Iron Dunes tracing helper - does this script have a base defense action? */
+//-------------------------------------------------------------------------------------------------
+static Bool scriptHasBaseDefenseAction(Script *pScript)
+{
+	if (pScript == nullptr) return FALSE;
+	for (ScriptAction *pAction = pScript->getAction(); pAction; pAction = pAction->getNext()) {
+		if (pAction->getActionType() == ScriptAction::SKIRMISH_BUILD_BASE_DEFENSE_FRONT ||
+				pAction->getActionType() == ScriptAction::SKIRMISH_BUILD_BASE_DEFENSE_FLANK) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+//-------------------------------------------------------------------------------------------------
 /** Enables a script or group. */
 //-------------------------------------------------------------------------------------------------
 void ScriptEngine::disableScript( ScriptAction *pAction )
@@ -6837,6 +6852,7 @@ void ScriptEngine::disableScript( ScriptAction *pAction )
 	Script *pScript = findScript(pAction->getParameter(0)->getString());
 	if (pScript) {
 		pScript->setActive(false);
+		if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && m_currentPlayer && (m_currentPlayer->getPlayerIndex()==4 || m_currentPlayer->getPlayerIndex()==5) && scriptHasBaseDefenseAction(pScript)) DEBUG_LOG(("bdef %d p%d script %s disabled", (Int)TheGameLogic->getFrame(), (Int)m_currentPlayer->getPlayerIndex(), pScript->getName().str()));
 	}
 	ScriptGroup *pGroup = findGroup(pAction->getParameter(0)->getString());
 	if (pGroup) {
@@ -6994,7 +7010,9 @@ void ScriptEngine::executeScript( Script *pScript )
 		for (DLINK_ITERATOR<Team> iter = pProto->iterate_TeamInstanceList(); !iter.done(); iter.advance()) {
 			m_conditionTeam = iter.cur();
 			// If conditions evaluate to true, execute actions.
-			if (evaluateConditions(pScript)) {
+			Bool conditionsResult = evaluateConditions(pScript);
+			if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && m_currentPlayer && (m_currentPlayer->getPlayerIndex()==4 || m_currentPlayer->getPlayerIndex()==5) && scriptHasBaseDefenseAction(pScript)) DEBUG_LOG(("bdef %d p%d script %s cond %d oneShot %d active %d team", (Int)TheGameLogic->getFrame(), (Int)m_currentPlayer->getPlayerIndex(), pScript->getName().str(), (Int)conditionsResult, (Int)pScript->isOneShot(), (Int)pScript->isActive()));
+			if (conditionsResult) {
 				// Script Debug window
 				if (pScript->getAction()) {
 					_appendMessage(pScript->getName());
@@ -7003,6 +7021,7 @@ void ScriptEngine::executeScript( Script *pScript )
 
 				if (pScript->isOneShot()) {
 					pScript->setActive(false);
+					if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && m_currentPlayer && (m_currentPlayer->getPlayerIndex()==4 || m_currentPlayer->getPlayerIndex()==5) && scriptHasBaseDefenseAction(pScript)) DEBUG_LOG(("bdef %d p%d script %s firesOnce active %d team", (Int)TheGameLogic->getFrame(), (Int)m_currentPlayer->getPlayerIndex(), pScript->getName().str(), (Int)pScript->isActive()));
 				}
 			}	else if (pScript->getFalseAction()) {
 
@@ -7017,7 +7036,9 @@ void ScriptEngine::executeScript( Script *pScript )
 	} else {
 		m_conditionTeam = nullptr;
 		// If conditions evaluate to true, execute actions.
-		if (evaluateConditions(pScript)) {
+		Bool conditionsResult = evaluateConditions(pScript);
+		if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && m_currentPlayer && (m_currentPlayer->getPlayerIndex()==4 || m_currentPlayer->getPlayerIndex()==5) && scriptHasBaseDefenseAction(pScript)) DEBUG_LOG(("bdef %d p%d script %s cond %d oneShot %d active %d", (Int)TheGameLogic->getFrame(), (Int)m_currentPlayer->getPlayerIndex(), pScript->getName().str(), (Int)conditionsResult, (Int)pScript->isOneShot(), (Int)pScript->isActive()));
+		if (conditionsResult) {
 			if (pScript->getAction()) {
 				// Script Debug window
 				_appendMessage(pScript->getName());
@@ -7026,6 +7047,7 @@ void ScriptEngine::executeScript( Script *pScript )
 
 			if (pScript->isOneShot()) {
 				pScript->setActive(false);
+				if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && m_currentPlayer && (m_currentPlayer->getPlayerIndex()==4 || m_currentPlayer->getPlayerIndex()==5) && scriptHasBaseDefenseAction(pScript)) DEBUG_LOG(("bdef %d p%d script %s firesOnce active %d", (Int)TheGameLogic->getFrame(), (Int)m_currentPlayer->getPlayerIndex(), pScript->getName().str(), (Int)pScript->isActive()));
 			}
 		}	else if (pScript->getFalseAction()) {
 
@@ -7036,6 +7058,7 @@ void ScriptEngine::executeScript( Script *pScript )
 			executeActions(pScript->getFalseAction());
 			if (pScript->isOneShot()) {
 				pScript->setActive(false);
+				if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && m_currentPlayer && (m_currentPlayer->getPlayerIndex()==4 || m_currentPlayer->getPlayerIndex()==5) && scriptHasBaseDefenseAction(pScript)) DEBUG_LOG(("bdef %d p%d script %s firesOnceFalse active %d", (Int)TheGameLogic->getFrame(), (Int)m_currentPlayer->getPlayerIndex(), pScript->getName().str(), (Int)pScript->isActive()));
 			}
 		}
 	}

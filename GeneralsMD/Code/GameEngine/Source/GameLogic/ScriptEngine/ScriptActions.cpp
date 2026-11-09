@@ -1141,8 +1141,11 @@ void ScriptActions::doBuildBaseDefense(Bool flank)
 {
 	// This action ALWAYS occur on the current player.
 	Player *thePlayer = TheScriptEngine->getCurrentPlayer();
+	if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && thePlayer && (thePlayer->getPlayerIndex()==4 || thePlayer->getPlayerIndex()==5)) DEBUG_LOG(("bdef %d p%d doBuildBaseDefense entry flank %d", (Int)TheGameLogic->getFrame(), (Int)thePlayer->getPlayerIndex(), (Int)flank));
 	if (thePlayer) {
 		thePlayer->buildBaseDefense(flank);
+	} else {
+		if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210) DEBUG_LOG(("bdef %d doBuildBaseDefense no current player flank %d", (Int)TheGameLogic->getFrame(), (Int)flank));
 	}
 }
 
@@ -1153,8 +1156,11 @@ void ScriptActions::doBuildBaseStructure(const AsciiString& buildingType, Bool f
 {
 	// This action ALWAYS occur on the current player.
 	Player *thePlayer = TheScriptEngine->getCurrentPlayer();
+	if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210 && thePlayer && (thePlayer->getPlayerIndex()==4 || thePlayer->getPlayerIndex()==5)) DEBUG_LOG(("bdef %d p%d doBuildBaseStructure entry %s flank %d", (Int)TheGameLogic->getFrame(), (Int)thePlayer->getPlayerIndex(), buildingType.str(), (Int)flank));
 	if (thePlayer) {
 		thePlayer->buildBaseDefenseStructure(buildingType, flank);
+	} else {
+		if (TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=1210) DEBUG_LOG(("bdef %d doBuildBaseStructure no current player %s flank %d", (Int)TheGameLogic->getFrame(), buildingType.str(), (Int)flank));
 	}
 }
 
