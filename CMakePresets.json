@@ -50,7 +50,8 @@
             "inherits": "vc6",
             "cacheVariables": {
                 "RTS_DEBUG_LOGGING": "ON",
-                "RTS_DEBUG_CRASHING": "ON"
+                "RTS_DEBUG_CRASHING": "OFF",
+                "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded"
             }
         },
         {

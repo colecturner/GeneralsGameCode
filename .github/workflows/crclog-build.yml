@@ -1,0 +1,17 @@
+name: CRC log build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-generalsmd-releaselog:
+    name: Build GeneralsMD vc6-releaselog (static runtime)
+    permissions:
+      contents: read
+    uses: ./.github/workflows/reusable-build-toolchain.yml
+    with:
+      game: "GeneralsMD"
+      preset: "vc6-releaselog"
+      tools: false
+      extras: false
+    secrets: inherit
