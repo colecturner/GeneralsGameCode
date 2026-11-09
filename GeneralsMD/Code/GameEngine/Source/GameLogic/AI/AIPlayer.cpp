@@ -1754,6 +1754,7 @@ Bool AIPlayer::selectTeamToBuild()
 		i++;
 	}
 	if (teamProto) {
+		DEBUG_LOG(("selectTeam %d chose %s", (Int)TheGameLogic->getFrame(), teamProto->getName().str()));
 		if (!teamProto->getTemplateInfo()->m_hasHomeLocation && !isSkirmishAI()) {
 			AsciiString teamStr = "Error : team '";
 			teamStr.concat(teamProto->getName());

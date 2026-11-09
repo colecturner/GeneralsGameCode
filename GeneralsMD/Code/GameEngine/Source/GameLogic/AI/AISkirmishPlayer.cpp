@@ -353,10 +353,12 @@ Bool AISkirmishPlayer::isAGoodIdeaToBuildTeam( TeamPrototype *proto )
 {
 	// Check condition.
 	if (!proto->evaluateProductionCondition()) {
+		DEBUG_LOG(("goodIdea %d %s condition false", (Int)TheGameLogic->getFrame(), proto->getName().str()));
 		return false;
 	}
 	// check build limit
 	if (proto->countTeamInstances() >= proto->getTemplateInfo()->m_maxInstances){
+		DEBUG_LOG(("goodIdea %d %s max instances %d", (Int)TheGameLogic->getFrame(), proto->getName().str(), proto->countTeamInstances()));
 		if (TheGlobalData->m_debugAI) {
 			AsciiString str;
 			str.format("Team %s not chosen - %d already exist.", proto->getName().str(), proto->countTeamInstances());
@@ -369,11 +371,13 @@ Bool AISkirmishPlayer::isAGoodIdeaToBuildTeam( TeamPrototype *proto )
 	{
 		TeamInQueue *team = iter.cur();
 		if (team->m_team->getPrototype() == proto) {
+			DEBUG_LOG(("goodIdea %d %s already queued", (Int)TheGameLogic->getFrame(), proto->getName().str()));
 			return false; // currently building one of these.
 		}
 	}
 	Bool needMoney;
 	if (!isPossibleToBuildTeam( proto, true, needMoney)) {
+		DEBUG_LOG(("goodIdea %d %s not possible needMoney %d", (Int)TheGameLogic->getFrame(), proto->getName().str(), (Int)needMoney));
 		if (TheGlobalData->m_debugAI) {
 			AsciiString str;
 			if (needMoney) {
@@ -385,6 +389,7 @@ Bool AISkirmishPlayer::isAGoodIdeaToBuildTeam( TeamPrototype *proto )
 		}
 		return false;
 	}
+	DEBUG_LOG(("goodIdea %d %s yes priority %d", (Int)TheGameLogic->getFrame(), proto->getName().str(), proto->getTemplateInfo()->m_productionPriority));
 	return true;
 }
 
