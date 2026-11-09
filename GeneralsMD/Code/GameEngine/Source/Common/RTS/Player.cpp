@@ -2499,7 +2499,9 @@ Bool Player::hasPrereqsForScience(ScienceType t) const
 /// returns TRUE if the player gained/lost levels as a result.
 Bool Player::addSkillPoints(Int delta)
 {
+	Int rawDelta = delta;
 	delta = REAL_TO_INT_CEIL(m_skillPointsModifier * INT_TO_REAL(delta));
+	DEBUG_LOG(("addskill %d player %d raw %d delta %d modifier %08X old %d", (Int)TheGameLogic->getFrame(), (Int)m_playerIndex, rawDelta, delta, *(UnsignedInt*)&m_skillPointsModifier, m_skillPoints));
 
 	if( delta == 0 )
 		return false;
@@ -2533,6 +2535,7 @@ Bool Player::addSkillPointsForKill(const Object* killer, const Object* victim)
 
 	Int victimLevel = victim->getVeterancyLevel();
 	Int skillValue = victim->getTemplate()->getSkillPointValue(victimLevel);
+	DEBUG_LOG(("killskill %d victim %d %s level %d value %d", (Int)TheGameLogic->getFrame(), (Int)victim->getID(), victim->getTemplate()->getName().str(), victimLevel, skillValue));
 
 	return addSkillPoints(skillValue);
 }
@@ -4025,6 +4028,7 @@ void Player::crc( Xfer *xfer )
 		m_battlePlanBonuses->m_invalidKindOf.xfer(xfer);
 	}
 
+	DEBUG_LOG(("playercrc %d player %d skill %d science %d levelUp %d rank %d", (Int)TheGameLogic->getFrame(), (Int)m_playerIndex, m_skillPoints, m_sciencePurchasePoints, m_levelUp, m_rankLevel));
 	xfer->xferInt( &m_skillPoints );
 	xfer->xferInt( &m_sciencePurchasePoints );
 
