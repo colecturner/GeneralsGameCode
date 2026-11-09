@@ -739,15 +739,15 @@ UpdateSleepTime PhysicsBehavior::update()
 				Vector3 xvec = mtx.Get_X_Vector();
 				Real sqrSum = sqr(xvec.X) + sqr(xvec.Y);
 				Real xy = WWMath::Sqrtf(sqrSum);
-				if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm { fld dword ptr [sqrSum]; fsqrt; fstp tbyte ptr [t80] } DEBUG_LOG(("x80 %d obj %d sqrt in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&sqrSum, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
+				if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [sqrSum] __asm fsqrt __asm fstp tbyte ptr [t80]  DEBUG_LOG(("x80 %d obj %d sqrt in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&sqrSum, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
 				Real xz = xvec.Z;
 				Real xyIn = xy;
 				Real pitchAngle = WWMath::Atan2(xz, xyIn);
-				if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm { fld dword ptr [xz]; fld dword ptr [xyIn]; fpatan; fstp tbyte ptr [t80] } DEBUG_LOG(("x80 %d obj %d atan2 y %08X x %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&xz, *(UnsignedInt*)&xyIn, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
+				if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [xz] __asm fld dword ptr [xyIn] __asm fpatan __asm fstp tbyte ptr [t80]  DEBUG_LOG(("x80 %d obj %d atan2 y %08X x %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&xz, *(UnsignedInt*)&xyIn, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
 				Real remainingAngle = (offset > 0) ? ((PI/2) - pitchAngle) : (-(PI/2) + pitchAngle);
 				Real rem = remainingAngle;
 				Real s = Sin(rem);
-				if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm { fld dword ptr [rem]; fsin; fstp tbyte ptr [t80] } DEBUG_LOG(("x80 %d obj %d sin in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&rem, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
+				if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [rem] __asm fsin __asm fstp tbyte ptr [t80]  DEBUG_LOG(("x80 %d obj %d sin in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&rem, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
 				pitchRateToUse *= s;
 			}
 
