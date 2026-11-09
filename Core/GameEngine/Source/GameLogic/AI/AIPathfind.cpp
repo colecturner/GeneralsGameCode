@@ -2620,8 +2620,21 @@ Int Pathfinder::examineNeighboringCells(PathfindCell *parentCell, PathfindCell *
 Path *Pathfinder::findPath( Object *obj, const LocomotorSet& locomotorSet, const Coord3D *from,
 													 const Coord3D *rawTo)
 {
+	Int traceFrame = 0;
+	Int traceObj = 0;
+	Bool trace = FALSE;
 	if (!clientSafeQuickDoesPathExist(locomotorSet, from, rawTo)) {
 		return nullptr;
+	}
+	if (obj != NULL && from != NULL && rawTo != NULL && TheGameLogic != NULL) {
+		traceFrame = (Int)TheGameLogic->getFrame();
+		traceObj = (Int)obj->getID();
+		trace = (traceFrame >= 1999 && traceFrame <= 2002 && (traceObj == 319 || traceObj == 322));
+	}
+	if (trace) {
+		DEBUG_LOG(("pathsearch %d obj %d from %08X %08X %08X to %08X %08X %08X", traceFrame, traceObj,
+			*(UnsignedInt*)&from->x, *(UnsignedInt*)&from->y, *(UnsignedInt*)&from->z,
+			*(UnsignedInt*)&rawTo->x, *(UnsignedInt*)&rawTo->y, *(UnsignedInt*)&rawTo->z));
 	}
 	Bool isHuman = true;
 	if (obj && obj->getControllingPlayer() && (obj->getControllingPlayer()->getPlayerType()==PLAYER_COMPUTER)) {

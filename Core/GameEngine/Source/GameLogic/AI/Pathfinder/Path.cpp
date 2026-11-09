@@ -21,6 +21,7 @@
 #include "GameLogic/AI.h"
 #include "GameLogic/AIPathfind.h"
 #include "GameLogic/Object.h"
+#include "GameLogic/GameLogic.h"
 #include "GameLogic/Pathfinder/PathfindCell.h"
 #include "GameLogic/Pathfinder/Path.h"
 #include "GameLogic/Pathfinder/PathNode.h"
@@ -261,9 +262,27 @@ void Path::updateLastNode( const Coord3D *pos )
 void Path::optimize( const Object *obj, LocomotorSurfaceTypeMask acceptableSurfaces, Bool blocked )
 {
 	PathNode *node, *anchor;
+	Int traceFrame = 0;
+	Int traceObj = 0;
+	Bool trace = FALSE;
 
 	// start with first node in the path
 	anchor = getFirstNode();
+	if (obj != NULL && TheGameLogic != NULL) {
+		traceFrame = (Int)TheGameLogic->getFrame();
+		traceObj = (Int)obj->getID();
+		trace = (traceFrame >= 1999 && traceFrame <= 2002 && (traceObj == 319 || traceObj == 322));
+	}
+	if (trace) {
+		Int traceIndex = 0;
+		PathNode *traceNode = NULL;
+		for (traceNode = getFirstNode(); traceNode != NULL; traceNode = traceNode->getNext()) {
+			DEBUG_LOG(("pathnode %d obj %d n %d pos %08X %08X %08X layer %d can %d", traceFrame, traceObj, traceIndex,
+				*(UnsignedInt*)&traceNode->getPosition()->x, *(UnsignedInt*)&traceNode->getPosition()->y, *(UnsignedInt*)&traceNode->getPosition()->z,
+				(Int)traceNode->getLayer(), (Int)traceNode->getCanOptimize()));
+			++traceIndex;
+		}
+	}
 
 	Bool firstNode = true;
 	PathfindLayerEnum firstLayer = anchor->getLayer();
@@ -364,6 +383,11 @@ void Path::optimize( const Object *obj, LocomotorSurfaceTypeMask acceptableSurfa
 			if (isPassable)
 			{
 				// anchor can directly see this node, make it next in the optimized path
+				if (trace) {
+					DEBUG_LOG(("pathopt %d obj %d anchor %08X %08X %08X next %08X %08X %08X", traceFrame, traceObj,
+						*(UnsignedInt*)&anchor->getPosition()->x, *(UnsignedInt*)&anchor->getPosition()->y, *(UnsignedInt*)&anchor->getPosition()->z,
+						*(UnsignedInt*)&node->getPosition()->x, *(UnsignedInt*)&node->getPosition()->y, *(UnsignedInt*)&node->getPosition()->z));
+				}
 				anchor->setNextOptimized( node );
 				anchor = node;
 				optimizedSegment = true;
@@ -374,6 +398,11 @@ void Path::optimize( const Object *obj, LocomotorSurfaceTypeMask acceptableSurfa
 		if (optimizedSegment == false)
 		{
 			// for some reason, there is no clear LOS between the anchor node and the very next node
+			if (trace) {
+				DEBUG_LOG(("pathopt %d obj %d anchor %08X %08X %08X next %08X %08X %08X", traceFrame, traceObj,
+					*(UnsignedInt*)&anchor->getPosition()->x, *(UnsignedInt*)&anchor->getPosition()->y, *(UnsignedInt*)&anchor->getPosition()->z,
+					*(UnsignedInt*)&anchor->getNext()->getPosition()->x, *(UnsignedInt*)&anchor->getNext()->getPosition()->y, *(UnsignedInt*)&anchor->getNext()->getPosition()->z));
+			}
 			anchor->setNextOptimized( anchor->getNext() );
 			anchor = anchor->getNext();
 		}
@@ -547,6 +576,12 @@ void Path::computePointOnPath(
 	ClosestPointOnPathInfo& out
 )
 {
+	Int traceFrame = 0;
+	Int traceObj = 0;
+	Bool trace = FALSE;
+	Bool pass1 = FALSE;
+	Bool pass2 = FALSE;
+	Bool pass3 = FALSE;
 	CRCDEBUG_LOG(("Path::computePointOnPath() for %s", DebugDescribeObject(obj).str()));
 
 	out.layer = LAYER_GROUND;
@@ -559,6 +594,11 @@ void Path::computePointOnPath(
 		return;
 	}
 	out.layer = m_path->getLayer();
+	if (obj != NULL && TheGameLogic != NULL) {
+		traceFrame = (Int)TheGameLogic->getFrame();
+		traceObj = (Int)obj->getID();
+		trace = (traceFrame >= 1999 && traceFrame <= 2002 && (traceObj == 319 || traceObj == 322));
+	}
 
 	if (m_cpopValid && m_cpopCountdown>0 && isReallyClose(pos, m_cpopIn))
 	{
@@ -707,9 +747,23 @@ void Path::computePointOnPath(
 			k = 1.0f;
 
 		Bool gotPos = false;
+		if (trace) {
+			DEBUG_LOG(("cpop %d obj %d close %08X %08X %08X next %08X %08X %08X got %d out %08X %08X %08X",
+				traceFrame, traceObj,
+				*(UnsignedInt*)&closeNodePos->x, *(UnsignedInt*)&closeNodePos->y, *(UnsignedInt*)&closeNodePos->z,
+				*(UnsignedInt*)&nextNodePos->x, *(UnsignedInt*)&nextNodePos->y, *(UnsignedInt*)&nextNodePos->z,
+				(Int)gotPos,
+				*(UnsignedInt*)&out.posOnPath.x, *(UnsignedInt*)&out.posOnPath.y, *(UnsignedInt*)&out.posOnPath.z));
+		}
 		CRCDEBUG_LOG(("Path::computePointOnPath() calling isLinePassable() 1"));
-		if (TheAI->pathfinder()->isLinePassable( obj, locomotorSet.getValidSurfaces(), out.layer, pos, *nextNodePos,
-			false, true ))
+		pass1 = TheAI->pathfinder()->isLinePassable( obj, locomotorSet.getValidSurfaces(), out.layer, pos, *nextNodePos,
+			false, true );
+		if (trace) {
+			DEBUG_LOG(("cpopcall %d obj %d call 1 from %08X %08X %08X to %08X %08X %08X pass %d", traceFrame, traceObj,
+				*(UnsignedInt*)&pos.x, *(UnsignedInt*)&pos.y, *(UnsignedInt*)&pos.z,
+				*(UnsignedInt*)&nextNodePos->x, *(UnsignedInt*)&nextNodePos->y, *(UnsignedInt*)&nextNodePos->z, (Int)pass1));
+		}
+		if (pass1)
 		{
 			out.posOnPath = *nextNodePos;
 			gotPos = true;
@@ -742,7 +796,17 @@ void Path::computePointOnPath(
 					tryPos.y = (nextNodePos->y + next->getPosition()->y) * 0.5;
 					tryPos.z = nextNodePos->z;
 					CRCDEBUG_LOG(("Path::computePointOnPath() calling isLinePassable() 2"));
-					if (veryClose || TheAI->pathfinder()->isLinePassable( obj, locomotorSet.getValidSurfaces(), closeNext->getLayer(), pos, tryPos, false, true ))
+					if (veryClose) {
+						pass2 = TRUE;
+					} else {
+						pass2 = TheAI->pathfinder()->isLinePassable( obj, locomotorSet.getValidSurfaces(), closeNext->getLayer(), pos, tryPos, false, true );
+					}
+					if (trace) {
+						DEBUG_LOG(("cpopcall %d obj %d call 2 from %08X %08X %08X to %08X %08X %08X pass %d", traceFrame, traceObj,
+							*(UnsignedInt*)&pos.x, *(UnsignedInt*)&pos.y, *(UnsignedInt*)&pos.z,
+							*(UnsignedInt*)&tryPos.x, *(UnsignedInt*)&tryPos.y, *(UnsignedInt*)&tryPos.z, (Int)pass2));
+					}
+					if (pass2)
 					{
 						gotPos = true;
 						out.posOnPath = tryPos;
@@ -760,7 +824,13 @@ void Path::computePointOnPath(
 			out.posOnPath.z = closeNodePos->z;
 
 			CRCDEBUG_LOG(("Path::computePointOnPath() calling isLinePassable() 3"));
-			if (TheAI->pathfinder()->isLinePassable( obj, locomotorSet.getValidSurfaces(), out.layer, pos, out.posOnPath, false, true ))
+			pass3 = TheAI->pathfinder()->isLinePassable( obj, locomotorSet.getValidSurfaces(), out.layer, pos, out.posOnPath, false, true );
+			if (trace) {
+				DEBUG_LOG(("cpopcall %d obj %d call 3 from %08X %08X %08X to %08X %08X %08X pass %d", traceFrame, traceObj,
+					*(UnsignedInt*)&pos.x, *(UnsignedInt*)&pos.y, *(UnsignedInt*)&pos.z,
+					*(UnsignedInt*)&out.posOnPath.x, *(UnsignedInt*)&out.posOnPath.y, *(UnsignedInt*)&out.posOnPath.z, (Int)pass3));
+			}
+			if (pass3)
 			{
 				k = 0.5f;
 				gotPos = true;
