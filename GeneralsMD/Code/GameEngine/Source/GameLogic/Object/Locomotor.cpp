@@ -39,6 +39,7 @@
 #include "GameLogic/GameLogic.h"
 #include "GameLogic/PartitionManager.h"
 #include "GameLogic/Locomotor.h"
+#include "Common/CRCDebug.h"
 #include "GameLogic/Object.h"
 #include "GameLogic/AI.h"
 #include "GameLogic/AIPathfind.h"
@@ -2284,7 +2285,29 @@ PhysicsTurningType Locomotor::rotateObjAroundLocoPivot(Object* obj, const Coord3
 
 		mtx.mul(tmp, *obj->getTransformMatrix());
 
+#ifdef DEBUG_CRC
+		{
+			// Iron Dunes tracing: every intermediate of the pivot turn as raw bits.
+			#define IDB(f) (*(const UnsignedInt*)&(f))
+			const Matrix3D& m0 = *obj->getTransformMatrix();
+			CRCDEBUG_LOG(("pivot obj %d angle %08X dir %08X %08X radius %08X tpo %08X turnPos %08X %08X dxdy %08X %08X desired %08X amount %08X",
+				obj->getID(), IDB(angle), IDB(dir->x), IDB(dir->y), IDB(radius), IDB(turnPointOffset), IDB(turnPos.x), IDB(turnPos.y), IDB(dx), IDB(dy), IDB(desiredAngle), IDB(amount)));
+			CRCDEBUG_LOG(("pivot tmp %08X %08X %08X %08X | %08X %08X %08X %08X | %08X %08X %08X %08X",
+				IDB(tmp[0][0]), IDB(tmp[0][1]), IDB(tmp[0][2]), IDB(tmp[0][3]), IDB(tmp[1][0]), IDB(tmp[1][1]), IDB(tmp[1][2]), IDB(tmp[1][3]), IDB(tmp[2][0]), IDB(tmp[2][1]), IDB(tmp[2][2]), IDB(tmp[2][3])));
+			CRCDEBUG_LOG(("pivot in %08X %08X %08X %08X | %08X %08X %08X %08X | %08X %08X %08X %08X",
+				IDB(m0[0][0]), IDB(m0[0][1]), IDB(m0[0][2]), IDB(m0[0][3]), IDB(m0[1][0]), IDB(m0[1][1]), IDB(m0[1][2]), IDB(m0[1][3]), IDB(m0[2][0]), IDB(m0[2][1]), IDB(m0[2][2]), IDB(m0[2][3])));
+			CRCDEBUG_LOG(("pivot out %08X %08X %08X %08X | %08X %08X %08X %08X | %08X %08X %08X %08X",
+				IDB(mtx[0][0]), IDB(mtx[0][1]), IDB(mtx[0][2]), IDB(mtx[0][3]), IDB(mtx[1][0]), IDB(mtx[1][1]), IDB(mtx[1][2]), IDB(mtx[1][3]), IDB(mtx[2][0]), IDB(mtx[2][1]), IDB(mtx[2][2]), IDB(mtx[2][3])));
+			#undef IDB
+		}
+#endif
 		obj->setTransformMatrix(&mtx);
+#ifdef DEBUG_CRC
+		{
+			Real after = obj->getOrientation();
+			CRCDEBUG_LOG(("pivot after orientation %08X", *(const UnsignedInt*)&after));
+		}
+#endif
 	}
 	else
 	{
