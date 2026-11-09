@@ -1008,6 +1008,17 @@ void Locomotor::locoUpdate_moveTowardsAngle(Object* obj, Real goalAngle)
 		Coord3D desiredPos = *obj->getPosition();
 		desiredPos.x += Cos(goalAngle) * 1000.0f;
 		desiredPos.y += Sin(goalAngle) * 1000.0f;
+#ifdef DEBUG_CRC
+		{
+			// Iron Dunes tracing: moveTowardsAngle's synthetic point as raw bits.
+			Real c = Cos(goalAngle), sn = Sin(goalAngle);
+			const Coord3D* p0 = obj->getPosition();
+			CRCDEBUG_LOG(("towardsAngle obj %d goal %08X cos %08X sin %08X pos %08X %08X desired %08X %08X", obj->getID(),
+				*(const UnsignedInt*)&goalAngle, *(const UnsignedInt*)&c, *(const UnsignedInt*)&sn,
+				*(const UnsignedInt*)&p0->x, *(const UnsignedInt*)&p0->y,
+				*(const UnsignedInt*)&desiredPos.x, *(const UnsignedInt*)&desiredPos.y));
+		}
+#endif
 		PhysicsTurningType rotating = rotateTowardsPosition(obj, desiredPos);
 		physics->setTurning(rotating);
 		handleBehaviorZ(obj, physics, *obj->getPosition());
@@ -2324,6 +2335,14 @@ PhysicsTurningType Locomotor::rotateObjAroundLocoPivot(Object* obj, const Coord3
 			turn = TURN_NONE;
 		}
 		obj->setOrientation( normalizeAngle(angle + amount) );
+#ifdef DEBUG_CRC
+		{
+			Real after = obj->getOrientation();
+			CRCDEBUG_LOG(("rotate obj %d angle %08X goal %08X %08X desired %08X amount %08X after %08X", obj->getID(),
+				*(const UnsignedInt*)&angle, *(const UnsignedInt*)&goalPos.x, *(const UnsignedInt*)&goalPos.y,
+				*(const UnsignedInt*)&desiredAngle, *(const UnsignedInt*)&amount, *(const UnsignedInt*)&after));
+		}
+#endif
 	}
 	return turn;
 }
