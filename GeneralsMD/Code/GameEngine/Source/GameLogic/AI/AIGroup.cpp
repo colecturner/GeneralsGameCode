@@ -37,6 +37,7 @@
 #include "Common/Upgrade.h"
 #include "Common/Xfer.h"
 #include "Common/XferCRC.h"
+#include "GameLogic/GameLogic.h"
 
 #include "GameClient/ControlBar.h"
 #include "GameClient/Drawable.h"
@@ -77,7 +78,7 @@ AIGroup::AIGroup()
 	m_id = TheAI->getNextGroupID();
 	m_memberListSize = 0;
 	m_memberList.clear();
-	//DEBUG_LOG(( "AIGroup #%d created", m_id ));
+	DEBUG_LOG(("aigroup %d create group %d", (Int)(TheGameLogic ? TheGameLogic->getFrame() : 0), (Int)m_id));
 }
 
 /**
@@ -177,6 +178,7 @@ void AIGroup::add( Object *obj )
 	DEBUG_ASSERTCRASH(obj != nullptr, ("trying to add null obj to AIGroup"));
 	if (obj == nullptr)
 		return;
+	DEBUG_LOG(("aigroup %d add group %d obj %d %s", (Int)TheGameLogic->getFrame(), (Int)getID(), (Int)obj->getID(), obj->getTemplate()->getName().str()));
 
 	AIUpdateInterface *ai = obj->getAIUpdateInterface();
 
@@ -220,6 +222,7 @@ Bool AIGroup::remove( Object *obj )
 	// make sure object is actually in the group
 	if (i == m_memberList.end())
 		return FALSE;
+	DEBUG_LOG(("aigroup %d remove group %d obj %d %s", (Int)TheGameLogic->getFrame(), (Int)getID(), (Int)obj->getID(), obj->getTemplate()->getName().str()));
 
 	// remove it
 	m_memberList.erase( i );
@@ -253,6 +256,7 @@ void AIGroup::removeAll()
 	AIGroupPtr refThis(this);
 #endif
 
+	DEBUG_LOG(("aigroup %d removeAll group %d size %d", (Int)TheGameLogic->getFrame(), (Int)getID(), (Int)m_memberListSize));
 	std::list<Object *> memberList;
 	memberList.swap(m_memberList);
 	m_memberListSize = 0;
