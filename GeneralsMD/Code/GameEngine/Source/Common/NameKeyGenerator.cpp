@@ -230,6 +230,8 @@ NameKeyType NameKeyGenerator::createNameKey(UnsignedInt hash, const AsciiString&
 	m_sockets[hash] = b;
 
 	NameKeyType result = b->m_key;
+	// Iron Dunes tracing: every name key assignment, in order.
+	DEBUG_LOG(("NameKey %d %s", (Int)result, name.str()));
 
 #if defined(RTS_DEBUG)
 	// reality-check to be sure our hasher isn't going bad.
