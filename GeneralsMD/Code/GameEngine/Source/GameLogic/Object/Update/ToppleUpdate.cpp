@@ -205,6 +205,7 @@ void ToppleUpdate::applyTopplingForce( const Coord3D* toppleDirection, Real topp
 	if (m_numAngleDeltaX < 1)
 		m_numAngleDeltaX = 1;
 	m_angleDeltaX = (desiredAngleX - curAngleX) / m_numAngleDeltaX;
+	if (getObject()->getID()==86 && TheGameLogic->getFrame()>=1975 && TheGameLogic->getFrame()<=2000) DEBUG_LOG(("topl %d obj %d apply in %08X %08X %08X speed %08X dir %08X %08X %08X angVel %08X accel %08X curAngleX %08X toppleAngle %08X desired %08X num %d delta %08X orient %08X", (Int)TheGameLogic->getFrame(), (Int)getObject()->getID(), *(UnsignedInt*)&toppleDirection->x, *(UnsignedInt*)&toppleDirection->y, *(UnsignedInt*)&toppleDirection->z, *(UnsignedInt*)&toppleSpeed, *(UnsignedInt*)&m_toppleDirection.x, *(UnsignedInt*)&m_toppleDirection.y, *(UnsignedInt*)&m_toppleDirection.z, *(UnsignedInt*)&m_angularVelocity, *(UnsignedInt*)&m_angularAcceleration, *(UnsignedInt*)&curAngleX, *(UnsignedInt*)&toppleAngle, *(UnsignedInt*)&desiredAngleX, (Int)m_numAngleDeltaX, *(UnsignedInt*)&m_angleDeltaX, *(UnsignedInt*)&getObject()->getTransformMatrix()[0][0]));
 
 	getObject()->getDrawable()->setModelConditionState(MODELCONDITION_TOPPLED);
 	FXList::doFXObj(d->m_toppleFX, getObject());
@@ -290,6 +291,7 @@ UpdateSleepTime ToppleUpdate::update()
 	xfrm.In_Place_Pre_Rotate_X(-curVelToUse * m_toppleDirection.y);
 	xfrm.In_Place_Pre_Rotate_Y(curVelToUse * m_toppleDirection.x);
 	obj->setTransformMatrix(&xfrm);
+	if (obj->getID()==86 && TheGameLogic->getFrame()>=1975 && TheGameLogic->getFrame()<=2000) { const Matrix3D *m = obj->getTransformMatrix(); Real v[12]; for (Int r=0; r<3; ++r) for (Int c=0; c<4; ++c) v[r*4+c] = (*m)[r][c]; DEBUG_LOG(("topl %d obj %d update curVel %08X accum %08X angVel %08X numDX %d mtx %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&curVelToUse, *(UnsignedInt*)&m_angularAccumulation, *(UnsignedInt*)&m_angularVelocity, (Int)m_numAngleDeltaX, *(UnsignedInt*)&v[0], *(UnsignedInt*)&v[1], *(UnsignedInt*)&v[2], *(UnsignedInt*)&v[3], *(UnsignedInt*)&v[4], *(UnsignedInt*)&v[5], *(UnsignedInt*)&v[6], *(UnsignedInt*)&v[7], *(UnsignedInt*)&v[8], *(UnsignedInt*)&v[9], *(UnsignedInt*)&v[10], *(UnsignedInt*)&v[11])); }
 
 	m_angularAccumulation += curVelToUse;
 	if ((m_angularAccumulation >= ANGULAR_LIMIT) && (m_angularVelocity > 0))
@@ -385,6 +387,7 @@ void ToppleUpdate::onCollide( Object *other, const Coord3D *loc, const Coord3D *
 			vel = *phys->getVelocity();
 		else
 			vel.zero();
+		if (getObject()->getID()==86 && TheGameLogic->getFrame()>=1975 && TheGameLogic->getFrame()<=2000) DEBUG_LOG(("topl %d obj %d collide other %d %s vec %08X %08X vel %08X %08X %08X", (Int)TheGameLogic->getFrame(), (Int)getObject()->getID(), (Int)other->getID(), other->getTemplate()->getName().str(), *(UnsignedInt*)&toppleVector.x, *(UnsignedInt*)&toppleVector.y, *(UnsignedInt*)&vel.x, *(UnsignedInt*)&vel.y, *(UnsignedInt*)&vel.z));
 		getObject()->topple( &toppleVector, vel.length(), TOPPLE_OPTIONS_NONE );
 
 	}
