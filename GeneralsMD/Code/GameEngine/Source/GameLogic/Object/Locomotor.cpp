@@ -1379,6 +1379,7 @@ void Locomotor::moveTowardsPositionTreads(Object* obj, PhysicsBehavior *physics,
 		force.x = accelForce * dir->x;
 		force.y = accelForce * dir->y;
 		force.z = 0.0f;
+		if (obj->getID()==862 && TheGameLogic->getFrame()>=1150 && TheGameLogic->getFrame()<=1180) { Real o = obj->getOrientation(); DEBUG_LOG(("treads %d obj %d orient %08X rel %08X coeff %08X goalSpeed %08X actual %08X slow %08X dist %08X delta %08X accelForce %08X dir %08X %08X force %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&(o), *(UnsignedInt*)&(relAngle), *(UnsignedInt*)&(angleCoeff), *(UnsignedInt*)&(goalSpeed), *(UnsignedInt*)&(actualSpeed), *(UnsignedInt*)&(slowDownDist), *(UnsignedInt*)&(onPathDistToGoal), *(UnsignedInt*)&(speedDelta), *(UnsignedInt*)&(accelForce), *(UnsignedInt*)&(dir->x), *(UnsignedInt*)&(dir->y), *(UnsignedInt*)&(force.x), *(UnsignedInt*)&(force.y))); }
 
 		// apply forces to object
 		physics->applyMotiveForce( &force );

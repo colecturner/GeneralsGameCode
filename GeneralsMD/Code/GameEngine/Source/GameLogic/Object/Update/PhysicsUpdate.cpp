@@ -333,6 +333,7 @@ void PhysicsBehavior::applyForce( const Coord3D *force )
 	}
 
 	Real massInv = 1.0f / mass;
+	if (getObject()->getID()==862 && TheGameLogic->getFrame()>=1150 && TheGameLogic->getFrame()<=1180) DEBUG_LOG(("phys %d obj %d force motive %d in %08X %08X mod %08X %08X massInv %08X accel %08X %08X", (Int)TheGameLogic->getFrame(), (Int)getObject()->getID(), (Int)isMotive(), *(UnsignedInt*)&(force->x), *(UnsignedInt*)&(force->y), *(UnsignedInt*)&(modForce.x), *(UnsignedInt*)&(modForce.y), *(UnsignedInt*)&(massInv), *(UnsignedInt*)&(m_accel.x), *(UnsignedInt*)&(m_accel.y)));
 	m_accel.x += modForce.x * massInv;
 	m_accel.y += modForce.y * massInv;
 	m_accel.z += modForce.z * massInv;
@@ -479,6 +480,7 @@ void PhysicsBehavior::applyFrictionalForces()
 				accel.x += -(ff * forwardVel_x);
 				accel.y += -(ff * forwardVel_y);
 			}
+			if (getObject()->getID()==862 && TheGameLogic->getFrame()>=1150 && TheGameLogic->getFrame()<=1180) DEBUG_LOG(("phys %d obj %d friction lateralDot %08X lv %08X %08X lf %08X accel %08X %08X vel %08X %08X dir %08X %08X", (Int)TheGameLogic->getFrame(), (Int)getObject()->getID(), *(UnsignedInt*)&(lateralDot), *(UnsignedInt*)&(lateralVel_x), *(UnsignedInt*)&(lateralVel_y), *(UnsignedInt*)&(lf), *(UnsignedInt*)&(accel.x), *(UnsignedInt*)&(accel.y), *(UnsignedInt*)&(m_vel.x), *(UnsignedInt*)&(m_vel.y), *(UnsignedInt*)&(dir->x), *(UnsignedInt*)&(dir->y)));
 			applyForce(&accel);
 		}
 	}
@@ -649,6 +651,7 @@ UpdateSleepTime PhysicsBehavior::update()
 		m_vel.x += m_accel.x;
 		m_vel.y += m_accel.y;
 		m_vel.z += m_accel.z;
+		if (obj->getID()==862 && TheGameLogic->getFrame()>=1150 && TheGameLogic->getFrame()<=1180) DEBUG_LOG(("phys %d obj %d integrate accel %08X %08X vel %08X %08X pos %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&(m_accel.x), *(UnsignedInt*)&(m_accel.y), *(UnsignedInt*)&(m_vel.x), *(UnsignedInt*)&(m_vel.y), (UnsignedInt)0, (UnsignedInt)0));
 
 		// when vel gets tiny, just clamp to zero
 		const Real THRESH = 0.001f;
@@ -676,6 +679,7 @@ UpdateSleepTime PhysicsBehavior::update()
 			mtx.Adjust_Y_Translation(m_vel.y);
 			mtx.Adjust_Z_Translation(m_vel.z);
 		}
+		if (obj->getID()==862 && TheGameLogic->getFrame()>=1150 && TheGameLogic->getFrame()<=1180) { Real px = mtx.Get_X_Translation(); Real py = mtx.Get_Y_Translation(); DEBUG_LOG(("phys %d obj %d moved vel %08X %08X pos %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&(m_vel.x), *(UnsignedInt*)&(m_vel.y), *(UnsignedInt*)&(px), *(UnsignedInt*)&(py))); }
 
 		if (_isnan(mtx.Get_X_Translation()) || _isnan(mtx.Get_Y_Translation()) ||
 			_isnan(mtx.Get_Z_Translation())) {
