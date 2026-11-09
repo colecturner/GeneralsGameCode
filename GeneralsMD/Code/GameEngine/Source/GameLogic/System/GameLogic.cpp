@@ -3848,6 +3848,7 @@ void GameLogic::update()
 	}
 #endif
 
+	if (now==1527 || now==1528 || now==2093 || now==2094) { for (Int hi = 0; hi < (Int)m_sleepyUpdates.size(); ++hi) { UpdateModulePtr hu = m_sleepyUpdates[hi]; DEBUG_LOG(("heap %d i %d obj %d key %d %s next %d phase %d pri %08X", (Int)now, hi, (Int)hu->friend_getObject()->getID(), (Int)hu->getModuleNameKey(), TheNameKeyGenerator->keyToName(hu->getModuleNameKey()).str(), (Int)hu->friend_getNextCallFrame(), (Int)hu->friend_getNextCallPhase(), (UnsignedInt)hu->friend_getPriority())); } }
 	{
 		while (!m_sleepyUpdates.empty())
 		{
@@ -3865,6 +3866,7 @@ void GameLogic::update()
 			{
 				break;
 			}
+			if (now==1527 || now==1528 || now==2093 || now==2094) DEBUG_LOG(("heaprun %d obj %d key %d %s pri %08X", (Int)now, (Int)u->friend_getObject()->getID(), (Int)u->getModuleNameKey(), TheNameKeyGenerator->keyToName(u->getModuleNameKey()).str(), (UnsignedInt)u->friend_getPriority()));
 
 			UpdateSleepTime sleepLen = UPDATE_SLEEP_NONE;	// default, if it is disabled.
 
