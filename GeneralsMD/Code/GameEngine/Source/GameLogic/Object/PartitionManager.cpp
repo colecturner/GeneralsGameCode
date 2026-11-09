@@ -73,6 +73,7 @@
 #include "GameLogic/Module/ContainModule.h"
 #include "GameLogic/Module/StealthUpdate.h"
 #include "GameLogic/PartitionManager.h"
+#include "Common/XferCRC.h"
 #include "GameLogic/PolygonTrigger.h"
 #include "GameLogic/Squad.h"
 #include "GameLogic/GhostObject.h"
@@ -4643,10 +4644,29 @@ Bool PartitionManager::isClearLineOfSightTerrain(const Object* obj, const Coord3
 void PartitionManager::crc( Xfer *xfer )
 {
 
+#ifdef DEBUG_CRC
+	// Iron Dunes tracing: one CRC per run of m_cellCountX cells (a row of
+	// m_cells), so a shroud divergence can be located without changing
+	// the section CRC.
+	XferCRC rowXfer;
+	rowXfer.open("row");
+#endif
 	for (Int i=0; i<m_totalCellCount; ++i)
 	{
 		m_cells[i].crc(xfer);
+#ifdef DEBUG_CRC
+		m_cells[i].crc(&rowXfer);
+		if (m_cellCountX > 0 && (i + 1) % m_cellCountX == 0)
+		{
+			CRCDEBUG_LOG(("PartitionManager cells %d-%d: %8.8X", i + 1 - m_cellCountX, i, rowXfer.getCRC()));
+			rowXfer.close();
+			rowXfer.open("row");
+		}
+#endif
 	}
+#ifdef DEBUG_CRC
+	rowXfer.close();
+#endif
 
 }
 
