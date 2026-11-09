@@ -1362,6 +1362,7 @@ void TurretAIIdleScanState::loadPostProcess()
 //----------------------------------------------------------------------------------------------------------
 StateReturnType TurretAIIdleScanState::onEnter()
 {
+	if (TheGameLogic->getFrame()>=1850 && TheGameLogic->getFrame()<=1862) DEBUG_LOG(("turretidle %d obj %d", (Int)TheGameLogic->getFrame(), (Int)getMachineOwner()->getID()));
 	Real minA = getTurretAI()->getMinIdleScanAngle();
 	Real maxA = getTurretAI()->getMaxIdleScanAngle();
 	if (minA == 0.0f && maxA == 0.0f)
