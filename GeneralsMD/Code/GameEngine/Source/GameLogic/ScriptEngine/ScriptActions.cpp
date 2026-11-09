@@ -6617,6 +6617,7 @@ void ScriptActions::doNamedSetTrainHeld( const AsciiString &locoName, const Bool
 //-------------------------------------------------------------------------------------------------
 void ScriptActions::executeAction( ScriptAction *pAction )
 {
+	if (TheGameLogic->getFrame()>=2060 && TheGameLogic->getFrame()<=2070) { ScriptAction::ScriptActionType t = pAction->getActionType(); AsciiString p0; if (pAction->getNumParameters() > 0) p0 = pAction->getParameter(0)->getString(); DEBUG_LOG(("sact %d type %d p0 %s", (Int)TheGameLogic->getFrame(), (Int)t, p0.str())); }
 	switch (pAction->getActionType()) {
 		default:
 			DEBUG_CRASH(("Unknown ScriptAction type %d", pAction->getActionType())); return;

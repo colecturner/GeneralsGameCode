@@ -1430,6 +1430,7 @@ void Team::setAttackPriorityName(AsciiString name)
 // ------------------------------------------------------------------------
 void Team::getTeamAsAIGroup(AIGroup *pAIGroup)
 {
+	if (TheGameLogic->getFrame()>=2060 && TheGameLogic->getFrame()<=2070) DEBUG_LOG(("teamgrp %d team %s id %d group %d", (Int)TheGameLogic->getFrame(), getName().str(), (Int)getID(), pAIGroup ? (Int)pAIGroup->getID() : -1));
 	if (!pAIGroup) {
 		return;
 	}
