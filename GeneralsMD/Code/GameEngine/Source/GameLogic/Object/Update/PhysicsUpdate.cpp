@@ -533,6 +533,7 @@ Bool PhysicsBehavior::handleBounce(Real oldZ, Real newZ, Real groundZ, Coord3D* 
 			setAngles(yawAngle, pitchAngle, rollAngle);
 		}
 
+		if (getObject()->getID()==287 && TheGameLogic->getFrame()>=1600 && TheGameLogic->getFrame()<=1700) { Real bz = bounceForce->z; Real mass = getMass(); DEBUG_LOG(("debr %d bnc id 287 oldZ %08X newZ %08X ground %08X vz %08X stiff %08X accel %08X mass %08X force %08X", (Int)TheGameLogic->getFrame(), *(UnsignedInt*)&oldZ, *(UnsignedInt*)&newZ, *(UnsignedInt*)&groundZ, *(UnsignedInt*)&vz, *(UnsignedInt*)&stiffness, *(UnsignedInt*)&desiredAccelZ, *(UnsignedInt*)&mass, *(UnsignedInt*)&bz)); }
 		if(bounceForce->z > 0.0f)
 		{
 			testStunnedUnitForDestruction();
@@ -827,7 +828,7 @@ UpdateSleepTime PhysicsBehavior::update()
 		{
 			obj->setTransformMatrix(&mtx);
 		}
-		if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) { Matrix3D m = *obj->getTransformMatrix(); const Coord3D *p = obj->getPosition(); Real o = obj->getOrientation(); Real m00 = m[0][0]; Real m01 = m[0][1]; Real m02 = m[0][2]; Real m03 = m[0][3]; Real m10 = m[1][0]; Real m11 = m[1][1]; Real m12 = m[1][2]; Real m13 = m[1][3]; Real m20 = m[2][0]; Real m21 = m[2][1]; Real m22 = m[2][2]; Real m23 = m[2][3]; DEBUG_LOG(("debr %d phys id %d pos %08X %08X %08X orient %08X vel %08X %08X %08X accel %08X %08X %08X rates %08X %08X %08X mtx %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&p->x, *(UnsignedInt*)&p->y, *(UnsignedInt*)&p->z, *(UnsignedInt*)&o, *(UnsignedInt*)&m_vel.x, *(UnsignedInt*)&m_vel.y, *(UnsignedInt*)&m_vel.z, *(UnsignedInt*)&m_accel.x, *(UnsignedInt*)&m_accel.y, *(UnsignedInt*)&m_accel.z, *(UnsignedInt*)&m_yawRate, *(UnsignedInt*)&m_pitchRate, *(UnsignedInt*)&m_rollRate, *(UnsignedInt*)&m00, *(UnsignedInt*)&m01, *(UnsignedInt*)&m02, *(UnsignedInt*)&m03, *(UnsignedInt*)&m10, *(UnsignedInt*)&m11, *(UnsignedInt*)&m12, *(UnsignedInt*)&m13, *(UnsignedInt*)&m20, *(UnsignedInt*)&m21, *(UnsignedInt*)&m22, *(UnsignedInt*)&m23)); }
+		if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1700) { Matrix3D m = *obj->getTransformMatrix(); const Coord3D *p = obj->getPosition(); Real o = obj->getOrientation(); Real m00 = m[0][0]; Real m01 = m[0][1]; Real m02 = m[0][2]; Real m03 = m[0][3]; Real m10 = m[1][0]; Real m11 = m[1][1]; Real m12 = m[1][2]; Real m13 = m[1][3]; Real m20 = m[2][0]; Real m21 = m[2][1]; Real m22 = m[2][2]; Real m23 = m[2][3]; DEBUG_LOG(("debr %d phys id %d pos %08X %08X %08X orient %08X vel %08X %08X %08X accel %08X %08X %08X rates %08X %08X %08X mtx %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&p->x, *(UnsignedInt*)&p->y, *(UnsignedInt*)&p->z, *(UnsignedInt*)&o, *(UnsignedInt*)&m_vel.x, *(UnsignedInt*)&m_vel.y, *(UnsignedInt*)&m_vel.z, *(UnsignedInt*)&m_accel.x, *(UnsignedInt*)&m_accel.y, *(UnsignedInt*)&m_accel.z, *(UnsignedInt*)&m_yawRate, *(UnsignedInt*)&m_pitchRate, *(UnsignedInt*)&m_rollRate, *(UnsignedInt*)&m00, *(UnsignedInt*)&m01, *(UnsignedInt*)&m02, *(UnsignedInt*)&m03, *(UnsignedInt*)&m10, *(UnsignedInt*)&m11, *(UnsignedInt*)&m12, *(UnsignedInt*)&m13, *(UnsignedInt*)&m20, *(UnsignedInt*)&m21, *(UnsignedInt*)&m22, *(UnsignedInt*)&m23)); }
 		if (((((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400)) || ((obj->getID()==433 || obj->getID()==423) && TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=932) || ((obj->getID()==126 || obj->getID()==125 || obj->getID()==119) && TheGameLogic->getFrame()>=950 && TheGameLogic->getFrame()<=1000))) { const Coord3D *p = obj->getPosition(); Real o = obj->getOrientation(); DEBUG_LOG(("x80 %d obj %d phys orient %08X pos %08X %08X vel %08X %08X accel %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&o, *(UnsignedInt*)&p->x, *(UnsignedInt*)&p->y, *(UnsignedInt*)&m_vel.x, *(UnsignedInt*)&m_vel.y, *(UnsignedInt*)&m_accel.x, *(UnsignedInt*)&m_accel.y)); }
 	}
 
@@ -910,6 +911,7 @@ UpdateSleepTime PhysicsBehavior::update()
 
 
 	// If we are effectively dead, we shouldn't recall kill.
+	if (obj->getID()==287 && TheGameLogic->getFrame()>=1600 && TheGameLogic->getFrame()<=1700) DEBUG_LOG(("debr %%d rest id 287 kill %%d airborne %%d vel %%08X %%08X %%08X", (Int)TheGameLogic->getFrame(), (Int)d->m_killWhenRestingOnGround, (Int)airborneAtEnd, *(UnsignedInt*)&m_vel.x, *(UnsignedInt*)&m_vel.y, *(UnsignedInt*)&m_vel.z));
 	if (d->m_killWhenRestingOnGround && !airborneAtEnd && isVerySmall3D(m_vel))
 	{
 		if( !obj->isKindOf( KINDOF_DRONE ) || obj->isEffectivelyDead() || obj->isDisabledByType( DISABLED_UNMANNED ) )

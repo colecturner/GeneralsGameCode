@@ -478,6 +478,7 @@ will be processed when we get to the front of the pathfind queue. jba */
 //-------------------------------------------------------------------------------------------------
 void AIUpdateInterface::requestPath( Coord3D *destination, Bool isFinalGoal )
 {
+	if (getObject()->getID()==243 && TheGameLogic->getFrame()>=1410 && TheGameLogic->getFrame()<=1425) DEBUG_LOG(("pathdbg %d obj 243 dest %08X %08X %08X final %d attack %d state %d goalObj %d", (Int)TheGameLogic->getFrame(), *(UnsignedInt*)&destination->x, *(UnsignedInt*)&destination->y, *(UnsignedInt*)&destination->z, (Int)isFinalGoal, (Int)m_isAttackPath, (Int)getStateMachine()->getCurrentStateID(), getStateMachine()->getGoalObject() ? (Int)getStateMachine()->getGoalObject()->getID() : 0));
 
 	if (m_locomotorSet.getValidSurfaces() == 0) {
 		DEBUG_CRASH(("Attempting to path immobile unit."));
