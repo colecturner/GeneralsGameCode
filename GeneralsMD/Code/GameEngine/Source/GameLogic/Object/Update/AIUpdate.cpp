@@ -1301,6 +1301,13 @@ Real AIUpdateInterface::calculateMaxBlockedSpeed(Object *other) const
 
 
 //-------------------------------------------------------------------------------------------------
+static Bool colLogWin(const Object *o)
+{
+	UnsignedInt f = TheGameLogic->getFrame(); ObjectID id = o->getID();
+	return ((id==433 || id==423) && f>=925 && f<=935) || ((id==887 || id==889) && f>=1340 && f<=1360);
+}
+
+//-------------------------------------------------------------------------------------------------
 Bool AIUpdateInterface::blockedBy(Object *other)
 /* Returns TRUE if we are blocked from moving by the other object.*/
 {
@@ -1308,6 +1315,7 @@ Bool AIUpdateInterface::blockedBy(Object *other)
 	Object *obj = getObject();
 	Coord3D pos = *obj->getPosition();
 	ICoord2D goalCell = *getPathfindGoalCell();
+	if (colLogWin(obj)) DEBUG_LOG(("colb %d obj %d other %d goalCell %d %d goal %08X %08X pos %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), (Int)other->getID(), goalCell.x, goalCell.y, *(UnsignedInt*)&goalPos.x, *(UnsignedInt*)&goalPos.y, *(UnsignedInt*)&pos.x, *(UnsignedInt*)&pos.y));
 
 	// If we are near our final goal, don't get stuck.
 	if (goalCell.x>0 && goalCell.y>0) {
@@ -1333,6 +1341,7 @@ Bool AIUpdateInterface::blockedBy(Object *other)
 	}
 	Bool otherMoving = ( aiOther->m_locomotorGoalType != NONE );
 	Coord3D otherPos = *other->getPosition();
+	if (colLogWin(obj)) DEBUG_LOG(("colb %d obj %d other %d canCrush %d otherGoalType %d otherPos %08X %08X infantry %d %d", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), (Int)other->getID(), (Int)canCrush, (Int)aiOther->m_locomotorGoalType, *(UnsignedInt*)&otherPos.x, *(UnsignedInt*)&otherPos.y, (Int)obj->isKindOf(KINDOF_INFANTRY), (Int)other->isKindOf(KINDOF_INFANTRY)));
 	Real dx = pos.x-otherPos.x;
 	Real dy = pos.y-otherPos.y;
 	Real curDSqr = dx*dx+dy*dy;
@@ -1371,6 +1380,7 @@ Bool AIUpdateInterface::blockedBy(Object *other)
 
 	Real collisionAngle = ThePartitionManager->getRelativeAngle2D( obj, &otherPos );
 	Real otherAngle = ThePartitionManager->getRelativeAngle2D( other, &pos );
+	if (colLogWin(obj)) DEBUG_LOG(("colb %d obj %d other %d dot %08X framesBlocked %d collisionAngle %08X otherAngle %08X ourDir %08X %08X theirDir %08X %08X dead %d", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), (Int)other->getID(), *(UnsignedInt*)&dotProduct, (Int)getNumFramesBlocked(), *(UnsignedInt*)&collisionAngle, *(UnsignedInt*)&otherAngle, *(UnsignedInt*)&ourDir.x, *(UnsignedInt*)&ourDir.y, *(UnsignedInt*)&theirDir.x, *(UnsignedInt*)&theirDir.y, (Int)aiOther->isAiInDeadState()));
 	//DEBUG_LOG(("Collision angle %.2f, %.2f, %s, %x %s", collisionAngle*180/PI, otherAngle*180/PI, obj->getTemplate()->getName().str(), obj, other->getTemplate()->getName().str()));
 	Real angleLimit = PI/4; // 45 degrees.
 	if (collisionAngle>PI/2 || collisionAngle<-PI/2) {
@@ -1458,11 +1468,13 @@ Bool AIUpdateInterface::processCollision(PhysicsBehavior *physics, Object *other
 
 	Bool selfMoving = isMoving();
 	Bool otherMoving = ( aiOther && aiOther->isMoving() );
+	if (colLogWin(getObject())) DEBUG_LOG(("colp %d obj %d other %d ignoreUntil %d canPath %d selfMoving %d otherMoving %d ground %d %d isBlocked %d blockedFrames %d bump %08X curMax %08X goalType %d ignoreObstacle %d state %d", (Int)TheGameLogic->getFrame(), (Int)getObject()->getID(), (Int)other->getID(), (Int)m_ignoreCollisionsUntil, (Int)m_canPathThroughUnits, (Int)selfMoving, (Int)otherMoving, (Int)isDoingGroundMovement(), (Int)aiOther->isDoingGroundMovement(), (Int)m_isBlocked, (Int)m_blockedFrames, *(UnsignedInt*)&m_bumpSpeedLimit, *(UnsignedInt*)&m_curMaxBlockedSpeed, (Int)m_locomotorGoalType, (Int)m_ignoreObstacleID, (Int)getStateMachine()->getCurrentStateID()));
 	if (!isDoingGroundMovement()) return FALSE;
 	if (!aiOther->isDoingGroundMovement()) return FALSE;
 	if (selfMoving)
 	{
 		Bool blocked = blockedBy(other);
+		if (colLogWin(getObject())) DEBUG_LOG(("colp %d obj %d other %d blocked %d", (Int)TheGameLogic->getFrame(), (Int)getObject()->getID(), (Int)other->getID(), (Int)blocked));
 		if (blocked)
 		{
 			if (getObject()->isKindOf(KINDOF_INFANTRY))
