@@ -50,6 +50,8 @@
 #include "GameLogic/PartitionManager.h"
 #include "GameLogic/ScriptActions.h"
 #include "GameLogic/ScriptEngine.h"
+#include "GameLogic/GameLogic.h"
+#include "GameLogic/AI.h"
 
 
 ///@todo - do delayed script evaluations for team scripts. jba.
