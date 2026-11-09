@@ -1755,11 +1755,11 @@ void Locomotor::moveTowardsPositionLegs(Object* obj, PhysicsBehavior *physics, c
 	Real angle = obj->getOrientation();
 //	Real relAngle = ThePartitionManager->getRelativeAngle2D( obj, &goalPos );
 //	Real desiredAngle = angle + relAngle;
-	Real dy = goalPos.y - obj->getPosition()->y;
-	Real dx = goalPos.x - obj->getPosition()->x;
-	Real desiredAngle = WWMath::Atan2(dy, dx);
-	if (((((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400)) || ((obj->getID()==433 || obj->getID()==423) && TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=932))) { unsigned char t80[10]; __asm fld dword ptr [dy] __asm fld dword ptr [dx] __asm fpatan __asm fstp tbyte ptr [t80]
-			DEBUG_LOG(("x80 %d obj %d legs atan2 y %08X x %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&dy, *(UnsignedInt*)&dx, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
+	Real legDy = goalPos.y - obj->getPosition()->y;
+	Real legDx = goalPos.x - obj->getPosition()->x;
+	Real desiredAngle = WWMath::Atan2(legDy, legDx);
+	if (((((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400)) || ((obj->getID()==433 || obj->getID()==423) && TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=932))) { unsigned char t80[10]; __asm fld dword ptr [legDy] __asm fld dword ptr [legDx] __asm fpatan __asm fstp tbyte ptr [t80]
+			DEBUG_LOG(("x80 %d obj %d legs atan2 y %08X x %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&legDy, *(UnsignedInt*)&legDx, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
 
 	if (m_template->m_wanderWidthFactor != 0.0f) {
 		Real angleLimit = PI/8 * m_template->m_wanderWidthFactor;
