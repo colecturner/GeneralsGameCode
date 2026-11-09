@@ -739,17 +739,17 @@ UpdateSleepTime PhysicsBehavior::update()
 				Vector3 xvec = mtx.Get_X_Vector();
 				Real sqrSum = sqr(xvec.X) + sqr(xvec.Y);
 				Real xy = WWMath::Sqrtf(sqrSum);
-				if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [sqrSum] __asm fsqrt __asm fstp tbyte ptr [t80]
+				if (((((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400)) || ((obj->getID()==433 || obj->getID()==423) && TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=932))) { unsigned char t80[10]; __asm fld dword ptr [sqrSum] __asm fsqrt __asm fstp tbyte ptr [t80]
 			DEBUG_LOG(("x80 %d obj %d sqrt in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&sqrSum, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
 				Real xz = xvec.Z;
 				Real xyIn = xy;
 				Real pitchAngle = WWMath::Atan2(xz, xyIn);
-				if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [xz] __asm fld dword ptr [xyIn] __asm fpatan __asm fstp tbyte ptr [t80]
+				if (((((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400)) || ((obj->getID()==433 || obj->getID()==423) && TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=932))) { unsigned char t80[10]; __asm fld dword ptr [xz] __asm fld dword ptr [xyIn] __asm fpatan __asm fstp tbyte ptr [t80]
 			DEBUG_LOG(("x80 %d obj %d atan2 y %08X x %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&xz, *(UnsignedInt*)&xyIn, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
 				Real remainingAngle = (offset > 0) ? ((PI/2) - pitchAngle) : (-(PI/2) + pitchAngle);
 				Real rem = remainingAngle;
 				Real s = Sin(rem);
-				if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { unsigned char t80[10]; __asm fld dword ptr [rem] __asm fsin __asm fstp tbyte ptr [t80]
+				if (((((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400)) || ((obj->getID()==433 || obj->getID()==423) && TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=932))) { unsigned char t80[10]; __asm fld dword ptr [rem] __asm fsin __asm fstp tbyte ptr [t80]
 			DEBUG_LOG(("x80 %d obj %d sin in %08X out %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&rem, t80[0], t80[1], t80[2], t80[3], t80[4], t80[5], t80[6], t80[7], t80[8], t80[9])); }
 				pitchRateToUse *= s;
 			}
@@ -828,7 +828,7 @@ UpdateSleepTime PhysicsBehavior::update()
 			obj->setTransformMatrix(&mtx);
 		}
 		if (obj->getID()==287 && TheGameLogic->getFrame()>=1590 && TheGameLogic->getFrame()<=1600) { Matrix3D m = *obj->getTransformMatrix(); const Coord3D *p = obj->getPosition(); Real o = obj->getOrientation(); Real m00 = m[0][0]; Real m01 = m[0][1]; Real m02 = m[0][2]; Real m03 = m[0][3]; Real m10 = m[1][0]; Real m11 = m[1][1]; Real m12 = m[1][2]; Real m13 = m[1][3]; Real m20 = m[2][0]; Real m21 = m[2][1]; Real m22 = m[2][2]; Real m23 = m[2][3]; DEBUG_LOG(("debr %d phys id %d pos %08X %08X %08X orient %08X vel %08X %08X %08X accel %08X %08X %08X rates %08X %08X %08X mtx %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&p->x, *(UnsignedInt*)&p->y, *(UnsignedInt*)&p->z, *(UnsignedInt*)&o, *(UnsignedInt*)&m_vel.x, *(UnsignedInt*)&m_vel.y, *(UnsignedInt*)&m_vel.z, *(UnsignedInt*)&m_accel.x, *(UnsignedInt*)&m_accel.y, *(UnsignedInt*)&m_accel.z, *(UnsignedInt*)&m_yawRate, *(UnsignedInt*)&m_pitchRate, *(UnsignedInt*)&m_rollRate, *(UnsignedInt*)&m00, *(UnsignedInt*)&m01, *(UnsignedInt*)&m02, *(UnsignedInt*)&m03, *(UnsignedInt*)&m10, *(UnsignedInt*)&m11, *(UnsignedInt*)&m12, *(UnsignedInt*)&m13, *(UnsignedInt*)&m20, *(UnsignedInt*)&m21, *(UnsignedInt*)&m22, *(UnsignedInt*)&m23)); }
-		if ((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400) { const Coord3D *p = obj->getPosition(); Real o = obj->getOrientation(); DEBUG_LOG(("x80 %d obj %d phys orient %08X pos %08X %08X vel %08X %08X accel %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&o, *(UnsignedInt*)&p->x, *(UnsignedInt*)&p->y, *(UnsignedInt*)&m_vel.x, *(UnsignedInt*)&m_vel.y, *(UnsignedInt*)&m_accel.x, *(UnsignedInt*)&m_accel.y)); }
+		if (((((obj->getID()==889 || obj->getID()==890) && TheGameLogic->getFrame()>=1300 && TheGameLogic->getFrame()<=1400)) || ((obj->getID()==433 || obj->getID()==423) && TheGameLogic->getFrame()>=900 && TheGameLogic->getFrame()<=932))) { const Coord3D *p = obj->getPosition(); Real o = obj->getOrientation(); DEBUG_LOG(("x80 %d obj %d phys orient %08X pos %08X %08X vel %08X %08X accel %08X %08X", (Int)TheGameLogic->getFrame(), (Int)obj->getID(), *(UnsignedInt*)&o, *(UnsignedInt*)&p->x, *(UnsignedInt*)&p->y, *(UnsignedInt*)&m_vel.x, *(UnsignedInt*)&m_vel.y, *(UnsignedInt*)&m_accel.x, *(UnsignedInt*)&m_accel.y)); }
 	}
 
 	// reset the acceleration for accumulation next frame
